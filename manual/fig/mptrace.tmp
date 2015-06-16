@@ -1,0 +1,37 @@
+
+input metauml;
+
+iPict.boxed := 1;
+
+beginfig(1);
+  iClass.shade := 3;
+  Class.F("Foo")("a: int","b: int")();
+  Class.B("Bar")()();
+  B.nw = F.ne + (20,-20);
+
+  drawObjects(B, F);
+  
+  link(association)(B.nw -- F.ne);
+
+  draw objectBorder(B) withcolor red;
+  draw objectBorder(F) withcolor blue;
+  
+  link(association)(pathCut(B,F)(B.c--F.c));
+endfig;
+
+beginfig(2);
+  save A, B;
+  
+  Picture.A("A");
+  Picture.B("Blue");
+  
+  B.sw = A.ne + (20,20);
+  
+  drawObjects(A, B);
+	
+  link(associationUni)(pathManhattanX(A.e, B));
+endfig;
+
+end
+
+end

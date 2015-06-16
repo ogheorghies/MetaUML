@@ -1,0 +1,86 @@
+%    Part of the MetaUML manual
+%    Copyright (c) 2005 Ovidiu Gheorghies
+%
+%    Permission is granted to copy, distribute and/or modify this document
+%    under the terms of the GNU Free Documentation License, Version 1.2
+%    or any later version published by the Free Software Foundation;
+%    with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+%    A copy of the license is included in the section entitled "GNU
+%    Free Documentation License".
+
+\newcommand{\metaumltest}[2]{Test #2 --- \\ \includegraphics{fig/test_#1.#2} \\ }
+\newcommand{\metaumltests}[2]{\multido{\iA=1+1}{#2}{\metaumltest{#1}{\iA}}} 
+
+\section{Test suite}
+
+\subsection{Low-level}
+  \metaumltests{lowlevel}{2}
+
+\subsection{Fonts}
+  \metaumltests{font}{3}
+
+\subsection{Cliparts}
+  %\metaumltests{cliparts}{1}
+  Locks ---\\
+  \includegraphics{fig/cliparts.1}
+
+\subsection{Util library}
+  \subsubsection{Picture tests}
+    \metaumltests{picture}{10}
+
+  \subsubsection{Picture tests - TeX rendering}
+    \metaumltests{picture_tex_rendering}{1}
+
+  \subsubsection{Group tests}
+    \metaumltests{group}{2}
+
+  \subsubsection{PictureStack tests}
+    \metaumltests{picture_stack}{3}
+
+  \subsubsection{Positioning tests}
+    \metaumltests{positioning}{6}
+
+\subsection{Class diagram}
+  \subsubsection{Class tests}
+    \metaumltests{class}{14}
+    
+  \subsubsection{Class template tests}
+    \metaumltests{class_templates}{3}
+
+  \subsubsection{Qualified Association tests}
+    \metaumltests{class_qual_assoc}{2}
+
+\subsection{Package diagram}
+\subsubsection{Package tests}
+    \metaumltests{package}{2}
+
+\subsection{Component diagram}
+\subsubsection{Component tests}
+    \metaumltests{component}{1}
+
+\subsection{Paths}
+  \metaumltests{paths}{3}
+
+\subsection{Behavioral diagrams}
+  \subsubsection{Activity tests}
+    \metaumltests{activity}{2}
+
+  \subsubsection{State Machine tests}
+    \metaumltests{state}{5}
+
+  \subsubsection{Usecase tests}
+    \metaumltests{usecase}{9}
+
+\subsection{Miscelaneous}
+  \subsubsection{Notes}
+    \metaumltests{note}{2}
+  \subsubsection{Objects (Class Instances)}
+    \metaumltests{instance}{1}
+
+\subsection{User requests}
+  Test 1 --- \\ \includegraphics[scale=.2]{fig/test_lars_issues.1} \\
+  \metaumltest{lars_issues}{2}
+
+\subsection{Skins}
+    \metaumltests{skins}{1}
+    \metaumltests{skins_global_defaults}{1}
