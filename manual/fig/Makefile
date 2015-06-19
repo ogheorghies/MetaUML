@@ -16,5 +16,5 @@ clean:
 	find . -name "*.tmp" -delete
 	find . -name "mptextmp.mp" -delete
 
-
 .PHONY: all clean
+
