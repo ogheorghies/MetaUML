@@ -1,3 +1,6 @@
+# Copyright 2015 Ovidiu Gheorghies
+# Licensed under the Apache License, Version 2.0.
+
 SRC:=$(wildcard *.mp)
 SRC:=$(filter-out mptextmp.mp, $(SRC))
 DST:=$(patsubst %.mp,%.1,$(SRC))
