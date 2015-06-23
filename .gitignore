@@ -1,0 +1,11 @@
+*.pdf
+*.tgz
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.aux
+*.[0-9]
+*.[0-9][0-9]
+mptextmp.mp
+*.mpx
