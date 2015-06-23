@@ -5,7 +5,7 @@ all: pdf
 
 pdf:
 	make -C fig
-	latexmk -pdf metauml_manual.tex
+	latexmk -pdf metauml-manual.tex
 
 clean:
 	make -C fig clean
