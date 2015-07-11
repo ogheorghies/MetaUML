@@ -24,7 +24,7 @@ enddef;
 
 def log text txt=
   if (util_log_defaultlevel <= util_log_thresholdlevel):
-    %includeonce% show txt
+    show txt
   else:
     % do nothing
   fi;

@@ -81,10 +81,10 @@ vardef EActivity@#(text _info)(text contents)=
 enddef;
 
 vardef Activity_layout@#=
-    if @#layedout = 1:
+    if @#laidout = 1:
     log "Activity " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
 
     PictureStack_layout.@#stack;
 

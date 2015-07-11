@@ -68,10 +68,10 @@ vardef Actor_setDebugMode@#=
 enddef;
 
 vardef Actor_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Actor " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "Actor layout: " & (str @#);
     Human_layout.@#human;
     PictureStack_layout.@#nameStack;
@@ -158,10 +158,10 @@ vardef EUsecase@#(text _info)(text contents)=
 enddef;
 
 vardef Usecase_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Usecase " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
 
     EPictureStack.@#nameStack(@#info.iNameStack)(scantokens listArray(@#lines)(@#nLines))("vcenterbase");
     PictureStack_layout.@#nameStack;

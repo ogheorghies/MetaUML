@@ -25,15 +25,17 @@ inputonce util_picture;
 inputonce util_picture_stack;
 inputonce util_shade;
 
-string accessPublic, accessProtected, accessPrivate;
-accessPublic:="+";
-accessProtected:="#";
-accessPrivate:="-";
+string visibilityPublic, visibilityProtected, visibilityPrivate, visibilityPackage;
+visibilityPublic:="+";
+visibilityProtected:="#";
+visibilityPrivate:="-";
+visibilityPackage:="~";
 
 vardef ClassInfo@#=
   attributes(@#);
-  var(numeric) featureAccessSpacing, accessWidth, accessHeight;
+  var(numeric) featureVisibilitySpacing, visibilityWidth, visibilityHeight;
   var(color)   foreColor, borderColor;
+  var(string)  featureVisibilityMode;
 
   FontInfo.@#nameFont(metauml_defaultFont, defaultscale);
 
@@ -43,41 +45,46 @@ vardef ClassInfo@#=
 
   ShadeInfo.@#iShade;
 
-  @#featureAccessSpacing := 2;
-  @#accessWidth := 7;
-  @#accessHeight := 6.75;
+  @#featureVisibilitySpacing := 2;
+  @#featureVisibilityMode := "individual"; % "none", "grouped"
+  @#visibilityWidth := 7;
+  @#visibilityHeight := 6.75;
 
   @#foreColor := .9white;
   @#borderColor := black;
 
   PictureInfo.@#iName      (2, 2, 1, 3)(@#nameFont);
 
-  PictureInfo.@#iStereotype(2, -5, 2, 2)(@#stereotypeFont);
+  PictureInfo.@#iStereotype(2, 2, 2, 2)(@#stereotypeFont);
   PictureInfo.@#iAttribute (2, 2, 1.25, 0)(@#attributeFont);
   PictureInfo.@#iMethod    (2, 2, 1.25, 0)(@#methodFont);
 
   PictureStackInfo.@#iStereotypeStack(2, 2, 1, 1)(5.5)(@#iStereotype);
-  PictureStackInfo.@#iAttributeStack (2, 2, 2.5, 2)(10.5)(@#iAttribute); % 8.5
+  PictureStackInfo.@#iAttributeStack (2, 2, 2.5, 2)(10.5)(@#iAttribute);
   PictureStackInfo.@#iMethodStack    (2, 2, 2.5, 2)(10.5)(@#iMethod);
+    
   @#iAttributeStack.iPict.bottom := 2;
-  %@#iAttributeStack.iPict.boxed := 1;
   @#iMethodStack.iPict.bottom := 2;
-  %@#iMethodStack.iPict.boxed := 1;
-
-  LockInfo.@#iLock(@#accessWidth, @#accessHeight, .6, .15, .55, .4white, .6white, .7white, .3white);
 
   @#iName.ignoreNegativeBase := 1;
   @#iAttributeStack.iPict.ignoreNegativeBase := 1;
   @#iMethodStack.iPict.ignoreNegativeBase := 1;
   @#iStereotypeStack.iPict.ignoreNegativeBase := 1;
+  
+  PictureStackInfoCopy.@#iAttributeVisibilityStack (@#iAttributeStack);
+  PictureStackInfoCopy.@#iMethodVisibilityStack (@#iMethodStack);
+  
+  @#iAttributeVisibilityStack.right := 0;
+  @#iMethodVisibilityStack.right := 0;
 enddef;
 
 vardef ClassInfoCopy@#(text src)=
   log "ClassInfoCopy: Copying class";
 
   attributes(@#);
-  var(numeric) featureAccessSpacing, accessWidth, accessHeight;
+  var(numeric) featureVisibilitySpacing, visibilityWidth, visibilityHeight;
   var(color)   foreColor, borderColor;
+  var(string)  featureVisibilityMode;
 
   FontInfoCopy.@#nameFont(src.nameFont);
 
@@ -87,9 +94,9 @@ vardef ClassInfoCopy@#(text src)=
 
   ShadeInfoCopy.@#iShade(src.iShade);
 
-  @#featureAccessSpacing := src.featureAccessSpacing;
-  @#accessWidth := src.accessWidth;
-  @#accessHeight := src.accessHeight;
+  @#featureVisibilitySpacing := src.featureVisibilitySpacing;
+  @#visibilityWidth := src.visibilityWidth;
+  @#visibilityHeight := src.visibilityHeight;
 
   @#foreColor := src.foreColor;
   @#borderColor := src.borderColor;
@@ -103,8 +110,10 @@ vardef ClassInfoCopy@#(text src)=
   PictureStackInfoCopy.@#iStereotypeStack(src.iStereotypeStack);
   PictureStackInfoCopy.@#iAttributeStack (src.iAttributeStack);
   PictureStackInfoCopy.@#iMethodStack    (src.iMethodStack);
+  PictureStackInfoCopy.@#iAttributeVisibilityStack (src.iAttributeVisibilityStack);
+  PictureStackInfoCopy.@#iMethodVisibilityStack    (src.iMethodVisibilityStack);
 
-  LockInfoCopy.@#iLock(src.iLock);
+  @#featureVisibilityMode := src.featureVisibilityMode;
 enddef;
 
 ClassInfo.iClass;
@@ -138,10 +147,10 @@ vardef defClass@#(expr pname) =
   string @#stereotypes[];
 
   string @#attributes[];
-  string @#attributesAccess[];
+  string @#attributesVisibility[];
 
   string @#methods[];
-  string @#methodsAccess[];
+  string @#methodsVisibility[];
 
   numeric @#nAttrs;
   numeric @#nMethods;
@@ -152,38 +161,44 @@ vardef defClass@#(expr pname) =
 enddef;
 
 vardef addAttribute@#(expr pcontent) =
-  string access;
-  access := substring(0,1) of pcontent;
-  if (not (access = accessPublic))  and
-     (not (access = accessPrivate)) and
-     (not (access = accessProtected)):
+  string visibility;
+  visibility := substring(0,1) of pcontent;
+  if (not (visibility = visibilityPublic))  and
+     (not (visibility = visibilityPrivate)) and
+     (not (visibility = visibilityProtected)) and
+     (not (visibility = visibilityPackage)):
 
     @#.attributes[@#.nAttrs] := pcontent;
-    @#.attributesAccess[@#.nAttrs] := accessProtected;
+    @#.attributesVisibility[@#.nAttrs] := visibilityProtected;
   else:
     save from;
     from := 1;
     if (substring(1,2) of pcontent) = " ": from := 2; fi;
 
     @#.attributes[@#.nAttrs] := substring(from, infinity) of pcontent;
-    @#.attributesAccess[@#.nAttrs] := access;
+    @#.attributesVisibility[@#.nAttrs] := visibility;
   fi;
 
   @#.nAttrs := @#.nAttrs + 1;
 enddef;
 
 vardef addMethod@#(expr pcontent) =
-  string access;
-  access := substring(0,1) of pcontent;
-  if (not (access = accessPublic))  and
-     (not (access = accessPrivate)) and
-     (not (access = accessProtected)):
+  string visibility;
+  visibility := substring(0,1) of pcontent;
+  if (not (visibility = visibilityPublic))  and
+     (not (visibility = visibilityPrivate)) and
+     (not (visibility = visibilityProtected)) and
+     (not (visibility = visibilityPackage)):
 
     @#.methods[@#.nMethods] := pcontent;
-    @#.methodsAccess[@#.nMethods] := accessProtected;
+    @#.methodsVisibility[@#.nMethods] := visibilityProtected;
   else:
-    @#.methods[@#.nMethods] := substring(1, 999) of pcontent;
-    @#.methodsAccess[@#.nMethods] := access;
+    save from;
+    from := 1;
+    if (substring(1,2) of pcontent) = " ": from := 2; fi;
+
+    @#.methods[@#.nMethods] := substring(from, infinity) of pcontent;
+    @#.methodsVisibility[@#.nMethods] := visibility;
   fi;
 
   @#.nMethods := @#.nMethods + 1;
@@ -250,86 +265,86 @@ vardef Class_border@#=
 enddef;
 
 vardef Class_layout@# =
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Class " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "Class layout: " & (str @#);
-
-    @#maxFeatureWidth := 0;
 
     EPictureStack.@#stereotypeStack(@#info.iStereotypeStack)
        (scantokens listArray(@#stereotypes)(@#nStereotypes))("vcenterbase");
 
     EPicture.@#namePict(@#info.iName)(@#name);
+    
+    layoutObjects(@#stereotypeStack, @#namePict);
+
+    % Define attributes
+
     EPictureStack.@#attributeStack(@#info.iAttributeStack)
        (scantokens listArray(@#attributes)(@#nAttrs))("vleftbase");
+
+    vardef joinCallbackAttributesVisibility@#=
+        setObjectJoin(pb.bottom = @#.attributeStack.pict[index].bottom; pb.midx = pa.midx);
+        setObjectJoinFirst(pa.bottom = @#.attributeStack.pict[index].bottom);
+    enddef;
+
+    EPictureStack.@#attributeVisibilityStack(@#info.iAttributeVisibilityStack)
+       (scantokens listArray(@#attributesVisibility)(@#nAttrs))
+       ("joinCallbackAttributesVisibility." & (str @#));
+
+    % Define methods
+
     EPictureStack.@#methodStack(@#info.iMethodStack)
        (scantokens listArray(@#methods)(@#nMethods))("vleftbase");
 
-    layoutObjects(@#stereotypeStack, @#namePict, @#attributeStack, @#methodStack);
+    vardef joinCallbackMethodsVisibility@#=
+        setObjectJoin(pb.bottom = @#.methodStack.pict[index].bottom; pb.midx = pa.midx);
+        setObjectJoinFirst(pa.bottom = @#.methodStack.pict[index].bottom);
+    enddef;
 
-    log "Computing maxFeatureWidth";
-    log @#stereotypeStack.width;
-    log @#namePict.width;
-    log @#attributeStack.width;
-    log @#methodStack.width;
-    log "...";
-    @#maxFeatureWidth := lmax(@#stereotypeStack.width, @#namePict.width,
-                              @#attributeStack.width, @#methodStack.width);
-    log "Done computing maxFeatureWidth";
+    EPictureStack.@#methodVisibilityStack(@#info.iMethodVisibilityStack)
+       (scantokens listArray(@#methodsVisibility)(@#nMethods))
+       ("joinCallbackMethodsVisibility." & (str @#));
 
-    log "max feature width: " & decimal @#maxFeatureWidth;
+    % Integrate components
 
-    @#namePict.midx = @#midx;
-    @#stereotypeStack.midx = @#namePict.midx;
+    layoutObjects(@#attributeStack, @#methodStack);
 
-    @#stereotypeStack.top = @#top;
-    @#namePict.top = @#stereotypeStack.bottom;
-    @#attributeStack.top = @#namePict.bottom;
+    @#attributeStack.left = @#methodStack.left;
     @#methodStack.top = @#attributeStack.bottom;
 
-    @#attributeStack.left = @#methodStack.left =
-        @#left + @#info.accessWidth + @#info.featureAccessSpacing;
+    layoutObjects(@#attributeVisibilityStack, @#methodVisibilityStack);
 
-    @#width = @#maxFeatureWidth + @#info.accessWidth + @#info.featureAccessSpacing;
-    @#bottom = @#methodStack.bottom;
+    @#attributeVisibilityStack.midx = @#methodVisibilityStack.midx;
 
-    log "Class layout done...";
+    if @#.nMethods = 0:
+       @#methodVisibilityStack.top = @#methodStack.top;
+    fi;
+    if @#.nAttrs = 0:
+       @#attributeVisibilityStack.top = @#attributeStack.top;
+    fi;
+
+    EGroup.@#visibilityStacks(iGroupNoMargins)(@#attributeVisibilityStack, @#methodVisibilityStack);
+    
+    EGroup.@#featureStacks(iGroupNoMargins)(@#attributeStack, @#methodStack);
+
+    layoutObjects(@#visibilityStacks, @#featureStacks);
+
+    @#visibilityStacks.right = @#featureStacks.left;
+
+    EGroup.@#featureGroup(iGroupNoMargins)(@#visibilityStacks, @#featureStacks);
+
+    topToBottom(0)(@#stereotypeStack, @#namePict, @#featureGroup);
+
+    EGroup.@#all(iGroupNoMargins)(@#stereotypeStack, @#namePict, @#featureGroup);
+
+    layoutObjects(@#all);
+
+    @#.nw = @#all.nw;
+    @#.se = @#all.se;
+
+    log "Class layout for " & (str @#) & " done...";
   fi;
-enddef;
-
-vardef Class_paintAccess@#(expr _access, _se) =
-  save lock;
-  ELock.lock(@#info.iLock)(_access);
-  lock.se = _se;
-  drawObject(lock);
-enddef;
-
-vardef Class_drawFeatures@#=
-  log "Drawing stereotypes";
-  drawObject(@#stereotypeStack);
-
-  log "Drawing name";
-  drawObject(@#namePict);
-  log "Drawing attribute stack";
-  drawObject(@#attributeStack);
-
-  log "Drawing method stack";
-  drawObject(@#methodStack);
-
-  log "********************************** Drawing access locks";
-  for i = 0 upto @#nAttrs-1:
-    log @#attributesAccess[i];
-    Class_paintAccess@#(@#attributesAccess[i],
-      @#attributeStack.pict[i].sw + (-@#info.featureAccessSpacing, @#info.iAttributeStack.iPict.bottom));
-  endfor;
-
-  for i = 0 upto @#nMethods-1:
-    log @#methodsAccess[i];
-    Class_paintAccess@#(@#methodsAccess[i],
-      @#methodStack.pict[i].sw + (-@#info.featureAccessSpacing, @#info.iMethodStack.iPict.bottom));
-  endfor;
 enddef;
 
 vardef Class_paintSkin@# =
@@ -337,15 +352,13 @@ vardef Class_paintSkin@# =
   nameAttributeY := @#attributeStack.top;
   attributeMethodY := @#methodStack.top;
 
- %fill Class_border.@# shifted (@#info.shade,-@#info.shade)
- %     withcolor .7white withpen currentpen scaled 1;
- drawObjectShade(@#);
+  drawObjectShade(@#);
 
- fill Class_border.@# withcolor @#info.foreColor;
- draw Class_border.@# withcolor @#info.borderColor;
+  fill Class_border.@# withcolor @#info.foreColor;
+  draw Class_border.@# withcolor @#info.borderColor;
 
- draw (xpart @#nw, nameAttributeY)--(xpart @#se, nameAttributeY) withcolor @#info.borderColor;
- draw (xpart @#nw, attributeMethodY)--(xpart @#se, attributeMethodY) withcolor @#info.borderColor;
+  draw (xpart @#nw, nameAttributeY)--(xpart @#se, nameAttributeY) withcolor @#info.borderColor;
+  draw (xpart @#nw, attributeMethodY)--(xpart @#se, attributeMethodY) withcolor @#info.borderColor;
 enddef;
 
 vardef Class_draw@#=
@@ -353,7 +366,8 @@ vardef Class_draw@#=
   Class_layout.@#;
   objectEnsurePositioning.@#;
   Class_paintSkin.@#;
-  Class_drawFeatures.@#;
+
+  drawObjects(@#all);
 enddef;
 
 vardef Class_setDebugMode@#=
@@ -364,4 +378,9 @@ vardef Class_setDebugMode@#=
   @#.info.iAttributeStack.iPict.boxed := 1;
   @#.info.iMethodStack.boxed := 1;
   @#.info.iMethodStack.iPict.boxed := 1;
+  
+  @#.info.iAttributeVisibilityStack.boxed := 1;
+  @#.info.iAttributeVisibilityStack.iPict.boxed := 1;
+  @#.info.iMethodVisibilityStack.boxed := 1;
+  @#.info.iMethodVisibilityStack.iPict.boxed := 1;
 enddef;

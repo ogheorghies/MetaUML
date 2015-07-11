@@ -94,10 +94,10 @@ vardef EComponent@#(text _info)(text contents)(text _subItems)=
 enddef;
 
 vardef Component_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Component '" & (str @#) & "' has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "Component layout: '" & (str @#) & "'";
 
     log "Component name layout '" & (str @#) & "'...";

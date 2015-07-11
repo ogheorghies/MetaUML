@@ -117,10 +117,10 @@ vardef Instance_border@#=
 enddef;
 
 vardef Instance_layout@# =
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Instance " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "Instance layout: " & (str @#);
 
     @#maxFeatureWidth := 0;

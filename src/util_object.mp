@@ -34,9 +34,9 @@ def ObjectEquations(suffix $)=
   var(picture) pict;
   var(string) className;
 
-  var(numeric) layedout, drawn;
+  var(numeric) laidout, drawn;
 
-  $.layedout := 0;
+  $.laidout := 0;
   $.drawn := 0;
 
   $.left  = xpart $.nw = xpart $.sw;
@@ -72,7 +72,7 @@ vardef objectBorder(suffix @#)=
   save methodName;
   string methodName;
   methodName := @#className & "_border";
-  log "invoking " & methodName & " arg=" & str @#;
+  log "objectBorder: invoking " & methodName & " arg=" & str @#;
 
   scantokens (methodName).@#
 enddef;
@@ -91,7 +91,7 @@ vardef layoutObject(suffix @#)=
   save methodName;
   string methodName;
   methodName := @#className & "_layout";
-  log "invoking " & methodName & " arg=" & str @#;
+  log "layoutObject: invoking " & methodName & " arg=" & str @#;
 
   scantokens (methodName).@#;
 enddef;
@@ -100,7 +100,7 @@ vardef drawObject(suffix @#)=
   save methodName;
   string methodName;
   methodName := @#className & "_draw";
-  log "invoking " & methodName & " arg=" & str @#;
+  log "drawObject: invoking " & methodName & " arg=" & str @#;
 
   scantokens (methodName).@#;
 enddef;
@@ -127,12 +127,13 @@ vardef drawObjectAt(suffix @#)(text eq)=
 enddef;
 
 vardef layoutObjects(text objects)=
-  log "Layout objects...";
+  log "layoutObjects: begin";
   forsuffixes o = objects:
     if (str o) <> "":
       layoutObject(o);
     fi;
   endfor;
+  log "layoutObjects: end";
 enddef;
 
 vardef drawObjects(text objects)=
@@ -162,17 +163,29 @@ enddef;
 %% joinObjects (p, q, r);
 %%
 def joinObjects(text pictures)=
-  save skipFirstPicture;
-  skipFirstPicture := 1;
+  log "joinObjects: call started.";
+
+  save _index;
+  _index := 0;
   forsuffixes p=pictures:
-    if skipFirstPicture=0:
-      objectDoJoin(previousPic, p);
+    exitif (str p) = "";
+    if _index=0:
+      log "  joinObjects: calling join for first object.";
+      log _index;
+      log p;
+      objectDoJoinFirst(p)(_index);
     else:
-      % first picture is skipped
-      skipFirstPicture := 0;
+      log "  joinObjects: calling join for next object.";
+      log _index;
+      log p;
+      objectDoJoin(previousPic, p)(_index);
     fi;
+
+    _index := _index + 1;
     def previousPic=p enddef;
   endfor;
+  
+  log "joinObjects: call ended."
 enddef;
 
 %%
@@ -193,7 +206,12 @@ enddef;
 %% setPictureJoin(pa.ne = pb.nw);
 %%
 def setObjectJoin(text eq)=
-  def objectDoJoin(suffix pa, pb)=eq enddef;
+  def objectDoJoin(suffix pa, pb)(expr index)=eq; enddef;
+  def objectDoJoinFirst(suffix pa)(expr index)= log "    objectDoJoinFirst: NOP"; enddef;
+enddef;
+
+def setObjectJoinFirst(text eq)=
+  def objectDoJoinFirst(suffix pa)(expr index)=eq; enddef;
 enddef;
 
 %%

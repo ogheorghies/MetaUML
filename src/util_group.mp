@@ -43,6 +43,7 @@ vardef GroupInfoCopy@#(text src)=
 enddef;
 
 GroupInfo.iGroup(2, 2, 2, 2);
+GroupInfo.iGroupNoMargins(0, 0, 0, 0);
 
 GroupInfoCopy.iGroupBoxed(iGroup);
 iGroupBoxed.boxed := 1;
@@ -74,19 +75,22 @@ vardef Group@#(text objects)=
 enddef;
 
 vardef Group_layout@#=
-  if @#layedout = 0:
+  if @#laidout = 0:
     log "Needing layout for group " & (str @#);
-    @#layedout := 1;
+    @#laidout := 1;
+
+    log "Calling layout for objects in group '" & (str @#) & "' .";
+    log "  Objects are: '" & @#objectsAsString & "'.";
 
     if (@#objectsAsString = ""):
+      log "Empty layout begin";
       @#width = @#info.left + @#info.right;
       @#height = @#info.top + @#info.bottom;
+      log "Empty layout end";
     else:
-      log "Calling layout for objects group '" & (str @#) & "' ...";
-      log " object are: '" & @#objectsAsString & "'.";
-
+      log "Layout with content";
       layoutObjects(scantokens @#objectsAsString);
-      log "All objects in group '" & (str @#) & "' are now layed out.";
+      log "All objects in group '" & (str @#) & "' are now laid out.";
 
       % As already tested, @#objectsAsString must be <> "".
       % See page 53, User's manual for MetaPost
@@ -94,51 +98,57 @@ vardef Group_layout@#=
       % executed, with the loop index parameter set to
       % the empty suffix" (!)
 
-      log "Proceeding to finding min/max x/y of objects:";
-      log "   " & @#objectsAsString;
+      log "Group_layout: finding min/max x/y of objects:" & @#objectsAsString;
 
       __objectIndex := 0;
       forsuffixes obj__ = scantokens @#objectsAsString:
         if __objectIndex = 0:
-            log "First object " & str obj__;
+            log "Group_layout: first object " & str obj__ & ", initial minx, maxx, miny, maxy follow.";
             @#minx := obj__.left;
-            log @#maxx;
-            log obj__.right;
             @#maxx := obj__.right;
-            log @#maxx;
             @#miny := obj__.bottom;
             @#maxy := obj__.top;
 
+            log @#minx;
+            log @#maxx;
+            log @#miny;
+            log @#maxy;
             __objectIndex := __objectIndex + 1;
         else:
-            log "Current object " & str obj__;
+            log "Group_layout: current object " & str obj__;
 
-            log "comparing(min)";
+            log "comparing minx";
             log @#minx;
-            log @#obj__.left;
-            @#minx := min(@#minx)(obj__.left);
+            log obj__.left;
+            @#minx := min(@#minx, obj__.left);
 
-            log "comparing(max)";
+            log "comparing maxx";
             log @#maxx;
-            log @#obj__.right;
-            @#maxx := max(@#maxx)(obj__.right);
+            log obj__.right;
+            @#maxx := max(@#maxx, obj__.right);
 
-            log "comparing(min)";
+            log "comparing miny";
             log @#miny;
-            log @#obj__.bottom;
-            @#miny := min(@#miny)(obj__.bottom);
+            log obj__.bottom;
+            @#miny := min(@#miny, obj__.bottom);
 
-            log "comparing(max)";
+            log "comparing maxy";
             log @#maxy;
-            log @#obj__.top;
-            @#maxy := max(@#maxy)(obj__.top);
+            log obj__.top;
+            @#maxy := max(@#maxy, obj__.top);
 
             __objectIndex := __objectIndex + 1;
         fi;
       endfor;
-      log "... done iterating";
-      log "maxx = ";
+      log "Group_layout: finding min/max x/y: done.";
+      log @#minx;
       log @#maxx;
+      log @#miny;
+      log @#maxy;
+
+      log "Group_layout: about to set nw, se";
+      log @#nw;
+      log @#se;
 
       @#nw = (@#minx - @#info.left, @#maxy + @#info.top);
       @#se = (@#maxx + @#info.right, @#miny - @#info.bottom);

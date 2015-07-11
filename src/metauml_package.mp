@@ -101,10 +101,10 @@ vardef EPackage@#(text _info)(text contents)(text _subItems)=
 enddef;
 
 vardef Package_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Package '" & (str @#) & "' has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "Package layout: '" & (str @#) & "'";
 
     log "Package name layout '" & (str @#) & "'...";

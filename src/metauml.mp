@@ -37,7 +37,6 @@ inputonce metauml_note;
 
 inputonce metauml_stereotype;
 
-inputonce metauml_class_clipart;
 inputonce metauml_class;
 inputonce metauml_instance;
 inputonce metauml_class_relations;

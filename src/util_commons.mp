@@ -60,13 +60,13 @@ vardef lmin(text items)=
   current
 enddef;
 
-def max(text a)(text b)=
+def _max(text a)(text b)=
   if (a > b): a%
   else:b%
   fi;
 enddef;
 
-def min(text a)(text b)=
+def _min(text a)(text b)=
   if (a < b): a%
   else:b%
   fi;

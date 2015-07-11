@@ -57,10 +57,10 @@ vardef Begin@#=
 enddef;
 
 vardef Begin_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Begin " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
 
     @#width = @#info.diameter;
     @#height = @#info.diameter;

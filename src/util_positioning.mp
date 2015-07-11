@@ -83,7 +83,7 @@ vardef align(suffix theString, extremityNew, extremityOld)
     string objectsAsString__;
     objectsAsString__ := enumToString(objects)("");
     
-    log "Alligning '" & objectsAsString__ & "' at " & str theString;
+    log "Aligning '" & objectsAsString__ & "' at " & str theString;
     log sign;
      
     if (objectsAsString__ = ""):

@@ -82,10 +82,10 @@ vardef ClassTemplate@#(text templates)(text theClass)=
 enddef;
 
 vardef Template_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Template " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "Template layout: " & (str @#);
     PictureStack_layout.@#elementsStack;
   fi;

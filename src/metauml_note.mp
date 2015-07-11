@@ -95,10 +95,10 @@ vardef ENote@#(text _info)(text contents)=
 enddef;
 
 vardef Note_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "Note " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "Note layout: " & (str @#);
 
     PictureStack_layout.@#stack;

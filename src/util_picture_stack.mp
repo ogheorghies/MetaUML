@@ -67,10 +67,15 @@ vardef EPictureStack@#(text pictStackInfo)(text thePictures)(text how)=
   attributes(@#);
   var(numeric) nItems;
   var(numeric) minx, miny, maxx, maxy;
-  var(string) picturesAsString;
-  var(string)  joinMethod;
+  var(string)  picturesAsString;
+  %var(text)   joinMethod;
 
-  @#joinMethod := how;
+  string @#joinMethod;
+  
+  %@#joinMethod := str how;
+  for l=how:
+    @#joinMethod := l;
+  endfor;
 
   @#nItems := 0;
   for p=thePictures:
@@ -91,10 +96,10 @@ vardef PictureStack@#(text thePictures)(text how)=
 enddef;
 
 vardef PictureStack_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "PictureStack " & (str @#) & " has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
 
     layoutObjects(scantokens @#picturesAsString);
 
@@ -110,6 +115,9 @@ vardef PictureStack_layout@#=
       setObjectJoin(pa.midx=pb.midx; pa.bottom = pb.bottom + @#info.spacing);
     elseif @#joinMethod = "vrightbase":
       setObjectJoin(pa.right=pb.right; pa.bottom = pb.bottom + @#info.spacing);
+    else:
+      setObjectJoin(pa.c = pb.c); % By default, stack objects on top of each other.
+      scantokens @#joinMethod;
     fi;
 
     joinObjects(scantokens @#picturesAsString);

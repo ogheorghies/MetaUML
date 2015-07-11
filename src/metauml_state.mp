@@ -105,10 +105,10 @@ vardef State_internalTransitions@#(text transitions)=
 enddef;
 
 vardef State_layout@#=
-  if @#layedout = 1:
+  if @#laidout = 1:
     log "State '" & (str @#) & "' has already been layed out";
   else:
-    @#layedout := 1;
+    @#laidout := 1;
     log "State layout: '" & (str @#) & "'";
 
     EPictureStack.@#internalTransitionsStack(@#info.iStack)

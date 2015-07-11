@@ -168,12 +168,12 @@ enddef;
 %% Lays out the Picture.
 %%
 vardef Picture_layout@# =
-  if @#layedout = 1:
-    log "Picture " & str @# & " already layed out.";
+  if @#laidout = 1:
+    log "Picture " & str @# & " already laid out.";
   else:
     log "Laying out " & (str @#);
 
-    @#layedout := 1;
+    @#laidout := 1;
 
     if known @#contentAsPicture:
       log "Content is known to be a picture";

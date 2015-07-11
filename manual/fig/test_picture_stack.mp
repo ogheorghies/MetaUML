@@ -20,6 +20,8 @@ input metauml;
 string theFont;
 theFont := "tyxtt";
 
+util_log_thresholdlevel := 100;
+
 beginfig(1);
   PictureStackInfoCopy.stackWay(iStack);
   
@@ -29,14 +31,20 @@ beginfig(1);
 endfig;
 
 beginfig(2);
-  PictureStack.myStack("foo", "bar: int" infont theFont, "cool man" infont defaultfont, "nice")("vcenter");
+  PictureStack.myStack("foo")("vcenter");
   myStack.nw = (0,0);
   PictureStack_draw.myStack;
 endfig;
 
 beginfig(3);
+  PictureStack.myStackB("foo", "bar")("vcenter");
+  myStackB.nw = (0,0);
+  PictureStack_draw.myStackB;
+endfig;
+
+beginfig(4);
   % 1
-  PictureStack.stack("fooornika", "gar nichts", "nicelina")("vcenter");
+  PictureStack.stack("item A", "item B long", "C")("vcenter");
   stack.info.boxed := 1;
   stack.info.iPict.boxed := 1; % this does nothing, it's too late
   
@@ -44,27 +52,55 @@ beginfig(3);
   drawObject(stack);
 
   % 2
-  PictureStack.stackb("fooornika", "gar nichts", "nicelina")("vcenter");
+  PictureStack.stackb("item A", "item B long", "C")("vcenter");
   stackb.info.boxed := 1;
   stackb.pict[0].info.boxed := 1;
   stackb.pict[2].info.boxed := 1;
   
-  stackb.nw = (50,0);
+  stackb.nw = (100,0);
   drawObject(stackb);
 
   % 3
   PictureStackInfoCopy.myInfo(iStack);
   myInfo.boxed := 1;
   myInfo.iPict.boxed := 1;
-  EPictureStack.stackc(myInfo)("fooornika", "gar nichts", "nicelina")("vcenter");
-  
-  stackc.nw = (100,0);
+  EPictureStack.stackc(myInfo)("item A", "item B long", "C")("vcenter");
+
+  stackc.nw = (200,0);
   drawObject(stackc);
 endfig;
 
-beginfig(4);
-    %
+beginfig(5);
+    vardef joinFunction= enddef;
+    PictureStack.custom("itemA", "item B long", "C")
+        ("joinFunction");
+        
+    drawObject(custom);
+endfig;
+
+beginfig(6);
+    save custom;
     
+    pickup pencircle scaled 4pt;
+    drawdot origin;
+
+    vardef joinCallbackA=
+        setObjectJoin(pa.bottom = pb.top + index*10; pa.left = pb.left);
+        setObjectJoinFirst(pa.nw = (30,0));
+    enddef;
+
+    PictureStack.customA("go", "further", "and further", "and further still")
+        ("joinCallbackA");
+
+    vardef joinCallbackB=
+        setObjectJoin(pb.bottom = customA.pict[index].bottom; pb.midx = pa.midx);
+        setObjectJoinFirst(pa.bottom = customA.pict[index].bottom);
+    enddef;
+
+    PictureStack.customB(".", "..", "...", "....")
+        ("joinCallbackB");
+
+    drawObjects(customA, customB);
 endfig;
 
 end

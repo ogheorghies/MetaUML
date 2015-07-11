@@ -23,41 +23,33 @@ beginfig(0);
 endfig;
 
 beginfig(1);
-  Class.P("AAA")("- noo:int", "+bar:double","c:Integer","f: int")("foo()", "bar()");
-  Class_setDebugMode.P;
+  Class.A("A")()();
+  Class_setDebugMode.A;
 
-  P.nw=(0,0);
-  Class_draw.P;
+  A.nw=(0,0);
+  Class_draw.A;
 
-  Class.Q("AAA")("-noo:int", "+bar:double","c:Integer","f: int")("-noo()", "bar()");
-  Q.nw=P.ne + (20,0);
-  Class_draw.Q;
+  %Class.B("AAA")("-noo:int", "+bar:double","c:Integer","f: int")("-noo()", "bar()");
+  %B.nw=A.ne + (20,0);
+  %Class_draw.B;
 endfig;
 
 beginfig(2);
-  save P, Q;
+  save B;
+  Class.B("B")("+ a:int")();
+  Class_setDebugMode.B;
 
-  Class.P("AAA")("+ foo:int", "+bar:double","c:Integer","f: int")();
-  Class_setDebugMode.P;
-  P.nw=(0,0);
-  Class_draw.P;
-
-  Class.Q("AAA")("+ foo:int", "+bar:double","c:Integer","f: int")();
-  Q.nw=P.ne + (20,0);
-  Class_draw.Q;
+  B.nw=(0,0);
+  Class_draw.B;
 endfig;
 
 beginfig(3);
-  save P, Q;
+  save C;
+  Class.C("C")("+ a:int", "- b:int")();
+  Class_setDebugMode.C;
 
-  Class.P("AAA")()();
-  Class_setDebugMode.P;
-  P.nw=(0,0);
-  Class_draw.P;
-
-  Class.Q("AAA")()();
-  Q.nw=P.ne + (20,0);
-  Class_draw.Q;
+  C.nw=(0,0);
+  Class_draw.C;
 endfig;
 
 beginfig(4);
@@ -69,15 +61,16 @@ beginfig(4);
   P.nw=(0,0);
   Class_draw.P;
 
-
   Class.Q("AAA")()();
   classStereotypes.Q("<<ooo>>","<<home>>", "<<intergace>>");
   Q.nw=P.ne + (20,0);
   Class_draw.Q;
 endfig;
 
-beginfig(5)
-    Class.A("User")()();
+beginfig(5);
+    save A;
+
+    Class.A("User5")()();
     classStereotypes.A("<<interface>>","<<home>>");
     A.nw=(0,0);
     drawObject(A);
@@ -85,7 +78,7 @@ endfig;
 
 beginfig(6)
     save A;
-    Class.A("User")()();
+    Class.A("User6")()();
     A.info.iMethodStack.left := A.info.iMethodStack.right  := 50;
     A.info.iMethodStack.top  := A.info.iMethodStack.bottom := 20;
 
@@ -140,6 +133,24 @@ beginfig(14)
 	classStereotypes.A("<<interface>>","<<remote>>");
 	
 	drawObjects(A);
+endfig;
+
+beginfig(15);
+  save A, B, C;
+
+  iClass.featureVisibilityMode := "none";
+  Class.A("Foo")
+    ("+a: int", "-b: int", "#c: int", "d: int")
+    ("+x()", "-y()", "#z()", "t()");
+
+  iClass.featureVisibilityMode := "individual";
+  Class.B("Foo")
+    ("+a: int", "-b: int", "#c: int", "d: int")
+    ("+x()", "-y()", "#z()", "t()");
+
+  leftToRight(10)(A, B);
+
+  drawObjects(A,B);
 endfig;
 
 end
