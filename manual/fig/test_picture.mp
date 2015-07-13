@@ -21,83 +21,79 @@ string theFont;
 theFont := "tyxbtt";
 
 beginfig(1);
-   draw "xxx" infont defaultfont scaled defaultscale shifted (0,0);  
-   draw "yyy" infont (iFont.name) scaled (iFont.scale) shifted (5, 5);
-  
-   Picture.p("foo, bar, foo");
-   p.nw = (0,0);
-   drawObject(p);
+  draw "xxx" infont defaultfont scaled defaultscale shifted (0,0);  
+  draw "yyy" infont (iFont.name) scaled (iFont.scale) shifted (25, 0);
 
-   Picture.q("nice, ugly");
-   drawObjectAt(q)( q.nw = (30,30) );
+  Picture.p("foo, bar, baz");
+  p.nw = (0,0);
+  drawObject(p);
 
-   FontInfo.foo("tyxbtt", 1);  
-   PictureInfo.nice(3,6,5,10)(foo);
-   nice.boxed := 1;
-  
-   EPicture.myPic(nice)("what a nice feature");
-   drawObjectAt(myPic)( myPic.nw = (0,0));
+  Picture.q("qux, norf");
+  drawObjectAt(q)( q.nw = (30,30) );
+
+  FontInfo.foo("tyxbtt", 1);  
+  PictureInfo.iNice(3,6,5,10)(foo);
+  iNice.boxed := 1;
+
+  EPicture.myPic(iNice)("Custom iPicture");
+  drawObjectAt(myPic)( myPic.nw = (70,0));
 endfig;
 
 beginfig(2);
-   save p, q, r, t;
+  save p, q, r, t;
 
-   Picture.p("foo");
-   Picture.q("bar");
-   p.nw = (10, 10);
-   q.nw = (20, 20);
+  Picture.p("foo");
+  Picture.q("bar");
+  p.nw = (10, 10);
+  q.nw = (20, 20);
 
-   drawObject(p);
-   drawObject(q);
+  drawObject(p);
+  drawObject(q);
 
-   drawObjects(p, q);
+  drawObjects(p, q);
 
-   Picture.a0("root" infont defaultfont);
-   Picture.a1("toof");
+  Picture.a0("root" infont defaultfont);
+  Picture.a1("toof");
 
-   a[0].nw = (30, 30);
-   a[1].nw = (50, 50);
+  a[0].nw = (30, 30);
+  a[1].nw = (50, 50);
 
-   drawObjects(scantokens listArray(a)(2));
-   %drawObjectArray(a)(2);
+  drawObjects(scantokens listArray(a)(2));
 endfig;
 
 beginfig(3);
   save p, q, r, t, u, pp;
-  
+
   bboxmargin := 0;
 
   picture pp;
   pp = "a" infont theFont;
   Picture.p(pp);
-  Picture.q("cool" infont theFont);
-  Picture.r("good" infont theFont);
-  Picture.t("tust");
-  Picture.u("fook" infont theFont);
-  
-  p.nw = (0,50);
+  Picture.q("foo" infont theFont);
+  Picture.r("bar" infont theFont);
+  Picture.t("baz");
+  Picture.u("norf" infont theFont);
+
+  p.nw = (0,0);
   setObjectJoin(pa.left=pb.left; pa.bottom = pb.top + 1);
   joinDrawObjects(p, q, r, t, u);
 
   defaultdy:=0;
   boxjoin(a.sw=b.nw; a.se=b.ne);
-  boxit.A0("aaa");
-  boxit.A1("dddd");
-  boxit.A2("asf");
-  boxit.A3("good");
+  boxit.A0("foo1");
+  boxit.A1("bar1");
+  boxit.A2("baz2");
+  boxit.A3("norf2");
   boxit.A4("..");
-  A0.nw=(0,0);
+  A0.nw=(50,0);
   drawboxed(A0,A1,A2,A3,A4);
 
   show A[1].nw;
-  
-  Picture.B0(btex adsaas etex);
-  Picture.X[2](btex asdasad etex);
 
-  myy := 40;
-  
+  myy := 10;
+
   bboxmargin := 0;
- 
+
   pair p;
   p := (30,myy);
   dotlabel.lrt(".", p);
@@ -108,7 +104,7 @@ beginfig(3);
 
   show "LLCORNER P";
   show llcorner x;
-  
+
   pair q;
   q := (70,myy);
   dotlabel.lrt(".", q);
@@ -127,10 +123,10 @@ beginfig(3);
 
   show "LLCORNER q";
   show llcorner y;
-  
+
   draw (0,myy)--(150, myy) dashed evenly;
-  
-  myyb := 70;
+
+  myyb := 30;
   Picture.aa(btex goof etex);
   aa.sw = (30, myyb);
   Picture_draw.aa;
@@ -143,7 +139,7 @@ beginfig(4);
   FontInfo.myFont(theFont, 1);
   PictureInfo.myWay(0,0,0,0)(myFont);
   myWay.boxed := 1;
-  
+
   EPicture.a0(myWay)("goof");
   EPicture.a1(myWay)("Aoorian");
   EPicture.a2(myWay)("fpp");
@@ -157,9 +153,9 @@ beginfig(4);
   draw a0.sw --  a4.se withcolor black dashed evenly;
 
   myWay.ignoreNegativeBase := 1;
-  EPicture.b0(myWay)("goof");
-  EPicture.b1(myWay)("Aoorian");
-  EPicture.b2(myWay)("fpp");
+  EPicture.b0(myWay)("foo");
+  EPicture.b1(myWay)("Bar baz");
+  EPicture.b2(myWay)("qux");
   EPicture.b3(myWay)("f: int");
   EPicture.b4(myWay)("aa()");
 
@@ -170,14 +166,13 @@ beginfig(4);
   draw b0.sw --  b4.se withcolor black dashed evenly;
 endfig;
 
-
 beginfig(5);
   truecorners := 1;
   bboxmargin := 0;
   save p;
   picture basepict;
   basepict := "<<foo>>" infont "tyxtt";
-  
+
   draw basepict;
   draw bbox basepict;  
 endfig;
@@ -195,15 +190,15 @@ beginfig(7);
   myFixed.ignoreNegativeBase := 1;
   myFixed.fixedWidth := 20;
   myFixed.boxed := 1;
-  
+
   EPicture.a(myFixed)("a");
-  EPicture.b(myFixed)("yummy");
+  EPicture.b(myFixed)("bar");
   EPicture.c(myFixed)(".-.");
-  EPicture.d(myFixed)("job");
-  EPicture.e(myFixed)("football");
-  
+  EPicture.d(myFixed)("baz");
+  EPicture.e(myFixed)("qux norf");
+
   leftToRight.bottom(20)(a, b, c, d, e);
-  
+
   drawObjects(a, b, c, d, e);
 endfig;
 
@@ -214,15 +209,15 @@ beginfig(8);
   myFixed.ignoreNegativeBase := 1;
   myFixed.fixedWidth := 20;
   myFixed.boxed := 1;
-  
+
   EPicture.a(myFixed)("a");
-  EPicture.b(myFixed)("yummy");
+  EPicture.b(myFixed)("bar");
   EPicture.c(myFixed)(".-.");
-  EPicture.d(myFixed)("job");
-  EPicture.e(myFixed)("football");
-  
+  EPicture.d(myFixed)("baz");
+  EPicture.e(myFixed)("qux norf");
+
   leftToRight.bottom(20)(a, b, c, d, e);
-  
+
   drawObjects(a, b, c, d, e);
 endfig;
 
@@ -234,15 +229,15 @@ beginfig(9);
   myFixed.fixedWidth := 20;
   myFixed.fixedHeight := 30;
   myFixed.boxed := 1;
-  
+
   EPicture.a(myFixed)("a");
-  EPicture.b(myFixed)("yummy");
+  EPicture.b(myFixed)("bar");
   EPicture.c(myFixed)(".-.");
-  EPicture.d(myFixed)("job");
-  EPicture.e(myFixed)("football");
-  
+  EPicture.d(myFixed)("baz");
+  EPicture.e(myFixed)("qux norf");
+
   leftToRight.bottom(20)(a, b, c, d, e);
-  
+
   drawObjects(a, b, c, d, e);
 endfig;
 
@@ -255,15 +250,15 @@ beginfig(10);
   myFixed.fixedWidth := 20;
   myFixed.fixedHeight := 30;
   myFixed.boxed := 1;
-  
+
   EPicture.a(myFixed)("a");
-  EPicture.b(myFixed)("yummy");
+  EPicture.b(myFixed)("bar");
   EPicture.c(myFixed)(".-.");
-  EPicture.d(myFixed)("job");
-  EPicture.e(myFixed)("football");
-  
+  EPicture.d(myFixed)("baz");
+  EPicture.e(myFixed)("qux norf");
+
   leftToRight.bottom(20)(a, b, c, d, e);
-  
+
   drawObjects(a, b, c, d, e);
 endfig;
 
