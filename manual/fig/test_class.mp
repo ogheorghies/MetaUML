@@ -28,10 +28,6 @@ beginfig(1);
 
   A.nw=(0,0);
   Class_draw.A;
-
-  %Class.B("AAA")("-noo:int", "+bar:double","c:Integer","f: int")("-noo()", "bar()");
-  %B.nw=A.ne + (20,0);
-  %Class_draw.B;
 endfig;
 
 beginfig(2);
@@ -45,7 +41,7 @@ endfig;
 
 beginfig(3);
   save C;
-  Class.C("C")("+ a:int", "- b:int")();
+  Class.C("C")("+ a-#~+:int", "- b-#~+:int", "- g-#~+:int", "~ c-#~+:int", "# g-#~+:double")();
   Class_setDebugMode.C;
 
   C.nw=(0,0);
@@ -53,89 +49,100 @@ beginfig(3);
 endfig;
 
 beginfig(4);
+  save D;
+  Class.D("D")
+     ("+ a-#~+:int", "- b-#~+:int", "- g-#~+:int", "~ c-#~+:int", "# g-#~+:double")
+     ("+ a()-#~+:int", "- b()-#~+:int", "- g()-#~+:int", "~ c()-#~+:int", "# g()-#~+:double");
+  Class_setDebugMode.D;
+
+  D.nw=(0,0);
+  Class_draw.D;
+endfig;
+
+beginfig(5);
   save P, Q;
 
   Class.P("AAA")()();
-  classStereotypes.P("<<ooo>>","<<home>>", "<<intergace>>");
+  classStereotypes.P("<<ooo>>","<<home>>", "<<interface>>");
   Class_setDebugMode.P;
   P.nw=(0,0);
   Class_draw.P;
 
   Class.Q("AAA")()();
-  classStereotypes.Q("<<ooo>>","<<home>>", "<<intergace>>");
+  classStereotypes.Q("<<ooo>>","<<home>>", "<<interface>>");
   Q.nw=P.ne + (20,0);
   Class_draw.Q;
 endfig;
 
-beginfig(5);
+beginfig(6);
     save A;
 
-    Class.A("User5")()();
+    Class.A("User6")()();
     classStereotypes.A("<<interface>>","<<home>>");
     A.nw=(0,0);
     drawObject(A);
 endfig;
 
-beginfig(6)
+beginfig(7)
     save A;
-    Class.A("User6")()();
+    Class.A("User7")()();
     A.info.iMethodStack.left := A.info.iMethodStack.right  := 50;
     A.info.iMethodStack.top  := A.info.iMethodStack.bottom := 20;
 
     drawObject(A);
 endfig;
 
-beginfig(7)
-	save inter;
-	EClass.inter(iInterface)("Observer")()("+update(src: Object)");
-	drawObjects(inter);
+beginfig(8)
+  save inter;
+  EClass.inter(iInterface)("Observer")()("+update(src: Object)");
+  drawObjects(inter);
 endfig;
 
-beginfig(8)
+beginfig(9)
     save inter;
     EInterface.inter(iInterface)("Observer")("+update(src: Object)");
     drawObjects(inter);
 endfig;
 
-beginfig(9)
+beginfig(10)
     save inter;
     Interface.inter("Observer")("+update(src: Object)");
     drawObjects(inter);
 endfig;
 
-beginfig(10)
+beginfig(11)
     save A;
     EClass.A(iAbstractClass)("AbstractClass")("[]{}")("+update(src: Object)");
     drawObjects(A);
 endfig;
 
-beginfig(11)
+beginfig(12)
     save A;
     AbstractClass.A("AbstractClass")("[]{}")("+update(src: Object)");
     drawObjects(A);
 endfig;
 
-beginfig(12)
-	save A;
-	EClass.A(iClassNameOnly)("AClassWithNoCompartments")()();
-	drawObjects(A);	
-endfig;
-
 beginfig(13)
-	save A;
-	ClassName.A("AnotherClass");
-	drawObjects(A);
+  save A;
+  EClass.A(iClassNameOnly)("AClassWithNoCompartments")()();
+  drawObjects(A);  
 endfig;
 
 beginfig(14)
-	save A;
-	ClassName.A("AnotherClass");
-	classStereotypes.A("<<interface>>","<<remote>>");
-	
-	drawObjects(A);
+  save A;
+  ClassName.A("AnotherClass");
+  drawObjects(A);
 endfig;
 
-beginfig(15);
+beginfig(15)
+  save A;
+  ClassName.A("AnotherClass");
+  classStereotypes.A("<<interface>>","<<remote>>");
+
+  drawObjects(A);
+endfig;
+
+beginfig(16);
   save A, B, C;
 
   iClass.featureVisibilityMode := "none";
