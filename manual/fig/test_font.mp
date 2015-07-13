@@ -23,17 +23,14 @@ beginfig(1);
   theFont := "pcrr";
 
   boxjoin(a.sw=b.nw);
-  boxit.ff(("Font name: ( ) " & theFont) infont theFont);
-  boxit.s0("<<stereotype>>" infont theFont );
-  boxit.s1("<<a>>, <<b>>, <<c>>" infont theFont);
-  boxit.g0("[guard] " infont theFont);
-  boxit.g1("[stillhungry] closing paranthesis SHOWN after hungry !" infont theFont);
-  boxit.g2("[still hungry] closing paranthesis NOT shown after hungry !" infont theFont);
-  boxit.g3("[][][][]hm]" infont theFont);
-  boxit.c0("{constraint}" infont theFont);
-  boxit.c1("{a constraint} closing paranthesis NOT shown !" infont theFont);
 
-  drawboxed(ff, s0, s1, g0, g1, g2, g3, c0, c1);
+  boxit.ff(("Font name: ( ) " & theFont) infont theFont);
+  boxit.s0("<<stereotype>> text with guillemets. ><>><<" infont theFont );
+  boxit.s1("<<a>>, <<b>>, <<c>>" infont theFont);
+  boxit.s2("[g uard] text with square brackets []]." infont theFont);
+  boxit.s3("{c onstraint} text with curly brackets {}}." infont theFont);
+
+  drawboxed(ff, s0, s1, s2, s3);
 endfig;
 
 beginfig(2);
@@ -41,18 +38,14 @@ beginfig(2);
   theFont := "tyxbtt";
 
   boxjoin(a.sw=b.nw);
-  boxit.ff(("Font name: ( ) " & theFont) infont theFont);
-  boxit.s0("<<stereotype>>" infont theFont );
-  boxit.s1("<<a>>, <<b>>, <<c>>" infont theFont);
-  boxit.g0("[guard] " infont theFont);
-  boxit.g1("[stillhungry] closing paranthesis SHOWN after hungry !" infont theFont);
-  boxit.g2("[still hungry] closing paranthesis NOT shown after hungry !" infont theFont);
-  boxit.g3("[][][][]hm]" infont theFont);
-  boxit.c0("{constraint}" infont theFont);
-  boxit.c1("{a constraint} closing paranthesis NOT shown !" infont theFont);
 
-  drawboxed(ff, s0, s1, g0, g1, g2, g3, c0, c1);
-endfig;
+  boxit.ff(("Font name: ( ) " & theFont) infont theFont);
+  boxit.s0("<<stereotype>> text with guillemets. ><>><<" infont theFont );
+  boxit.s1("<<a>>, <<b>>, <<c>>" infont theFont);
+  boxit.s2("[g uard] text with square brackets []]." infont theFont);
+  boxit.s3("{c onstraint} text with curly brackets {}}." infont theFont);
+
+  drawboxed(ff, s0, s1, s2, s3);endfig;
 
 beginfig(3);
   picture pA, pB, pC;
@@ -76,16 +69,13 @@ beginfig(4);
 
   boxjoin(a.sw=b.nw);
   boxit.ff(("Font name: ( ) " & theFont) infont theFont);
-  boxit.s0("<<stereotype>>" infont theFont );
-  boxit.s1("<<a>>, <<b>>, <<c>>" infont theFont);
-  boxit.g0("[guard] " infont theFont);
-  boxit.g1("[stillhungry] closing paranthesis SHOWN after hungry !" infont theFont);
-  boxit.g2("[still hungry] closing paranthesis NOT shown after hungry !" infont theFont);
-  boxit.g3("[][][][]hm]" infont theFont);
-  boxit.c0("{constraint}" infont theFont);
-  boxit.c1("{a constraint} closing paranthesis NOT shown !" infont theFont);
 
-  drawboxed(ff, s0, s1, g0, g1, g2, g3, c0, c1);
+  boxit.s0("<<stereotype>> text with guillemets. ><>><<" infont theFont );
+  boxit.s1("<<a>>, <<b>>, <<c>>" infont theFont);
+  boxit.s2("[g uard] text with square brackets []]." infont theFont);
+  boxit.s3("{c onstraint} text with curly brackets {}}." infont theFont);
+
+  drawboxed(ff, s0, s1, s2, s3);
 endfig;
 
 end
