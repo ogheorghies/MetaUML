@@ -48,28 +48,15 @@ beginfig(1);
 endfig;
 
 beginfig(2);
-  save a,b,c,d;
-
-  show "***";
-  show "Figure 2";
-  show "";
+  save a,b;
 
   Actor.a("foo");
   drawObject(a);
 
-  Actor.b("Bar in debug mode", "fooling around");
+  Actor.b("Actor line one", "and line two");
   Actor_setDebugMode.b;
   b.n = (70,0);
   drawObject(b);
-
-  Actor.c("Student");
-  c.sw = b.n;
-  drawObject(c);
-
-  Actor.d(".");
-  d.e = (30, -50);
-  drawObject(d);
-  label.rt("X", d.e);
 endfig;
 
 beginfig(3);
@@ -88,22 +75,22 @@ beginfig(3);
   draw u.llft withpen pencircle scaled 2 withcolor blue;
   draw u.lrt withpen pencircle scaled 2 withcolor blue;
 
-  Usecase.login("Log in for an eagerly", "awaiting user", "which spans the 3rd line");
+  Usecase.login("Log in for an eagerly", "awaiting user", "which spans well into a very long 3rd line.");
   login.s = (0, 5);
   drawObject(login);
 
-  Usecase.t("foo xasdf  asdf as", "asdfa");
+  Usecase.t("Line 1 goo bar", "Line 2");
   t.s = login.n + (0,10);
   drawObject(t);
 
-  Usecase.q("foo xasdf  asdf as", "asdfa", "cru asdf asdf ygh", "Sdfg  s");
+  Usecase.q("Line 1 abcdefg hij", "abcde", "Line 3 abc def ghe jkl", "Line 4 x");
   q.s = t.n + (0,10);
   drawObject(q);
 
 endfig;
 
 beginfig(4);
-    Actor.userA("User A2", "doesn't looks all too nice", "by today's standards");
+    Actor.userA("User A2", "line 2", "line 3 long long long");
     % Any Actor object is made of two sub-objects: nameStack and human.
     % Each individual picture in the nameStack can be configured individually.
     %
@@ -145,18 +132,17 @@ beginfig(5);
     iBig.iNameStack.spacing := 25;
     iBig.iHuman.height := 25;
 
-    EActor.userA(iBig)("User A", "on two lines");
+    EActor.userA(iBig)("User A", "Specifically configured");
     drawObject(userA);
 endfig;
 
 beginfig(6);
     save userA;
-    % If you want to have GLOBAL settings
 
     iActor.iNameStack.iPict.iFont.scale := 2;
     iActor.iNameStack.spacing := 18;
 
-    Actor.userA("User A", "reloaded");
+    Actor.userA("User A", "Globally configured");
     drawObject(userA);
 endfig;
 
@@ -169,7 +155,7 @@ endfig;
 
 beginfig(8);
   save usecaseA;
-  Usecase.usecaseA("A highly customizable", "usecase. Foo bar!");
+  Usecase.usecaseA("A highly customizable", "usecase. Foo bar 2!");
   usecaseA.info.iNameStack.iPict.iFont.scale := 1.1;
   usecaseA.info.foreColor := red;
   usecaseA.info.borderColor := blue;
@@ -188,6 +174,8 @@ beginfig(9);
 
   EUsecase.usecaseA(iMyUsecase)("A highly ", " customizable usecase.");
   EUsecase.usecaseB(iMyUsecase)("Another very ", " customizable usecase.");
+
+  usecaseB.info.iShade.background := green;
 
   leftToRight(20)(usecaseA, usecaseB);
   drawObjects(usecaseA, usecaseB);
