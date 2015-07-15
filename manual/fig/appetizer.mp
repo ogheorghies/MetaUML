@@ -184,7 +184,7 @@ beginfig(8);
     Class.B("B")()();
     
     A.nw = (0,0);
-    B.e = A.w + (-20, 0);
+    B.w = A.e + (20, 0);
 
     drawObjects(A, B);
 endfig;
@@ -194,9 +194,9 @@ beginfig(9);
   
   Class.A("A")()();
   Class.B("B")()();
-  B.e = A.w + (-20, 0);
+  B.w = A.e + (20, 0);
   drawObjects(A, B);
-  link(inheritance)(B.e -- A.w);
+  link(inheritance)(B.w -- A.e);
 endfig;
 end
 

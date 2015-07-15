@@ -22,13 +22,12 @@
 \fi
 
 \newcommand{\code}{\ttfamily}
-\newcommand{\metauml}{MetaUML}
 
 \setcounter{page}{1}
 
 \begin{document}
 
-\metauml: Tutorial, Reference and Test Suite
+MetaUML: Tutorial, Reference and Test Suite
 
 \begin{quote}
     Copyright \copyright 2005 2015 Ovidiu Gheorghie\c{s}.
@@ -42,19 +41,21 @@
 This page is intentionally left blank.
 
 \pagebreak
-\title{\metauml: Tutorial, Reference and Test Suite}
+\title{MetaUML: A Manual and Test Suite}
 
 \author{Ovidiu Gheorghie\c{s}}
 
 \maketitle
 
 \begin{abstract}
-\metauml\ is a GNU GPL MetaPost library for typesetting UML diagrams, using a human-friendly textual notation. MetaUML offers a highly customizable, object-oriented API, designed with the ease of use in mind. Apart from being a reference, this manual is also a tutorial but, more importantly, a living example. You can look at its source code, getting direct accounts on ``how things are done''.
+MetaUML is a MetaPost library for creating UML diagrams, using a textual notation.
+This manual describes the use and some of the inner workings of MetaUML, but, more importantly, is a living example.
+Since the source code of the manual is freely available, you can get direct insights into ``how things are done''.
 \end{abstract}
 
 \section{Introduction}
 
-Here are a few diagrams created with MetaUML, just to give you a glimpse of its features:
+Here is a quick MetaUML showcase:
 
 \begin{multicols}{2}
 \paragraph{A} Class Diagram\\
@@ -74,9 +75,10 @@ Here are a few diagrams created with MetaUML, just to give you a glimpse of its 
 
 \pagebreak
 
-The code which generates these diagrams is quite straightforward, combining a natural object-oriented parlance with the power of MetaPost equation solving; for more information on MetaPost see \cite {metapost}.
+The code that generates these diagrams is quite straightforward, combining a natural object-oriented parlance
+with the power of MetaPost \cite {metapost} equation solving.
 
-An UML class, for example, can be drawn as follows:
+For example, a UML class is drawn as follows:
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -92,73 +94,74 @@ drawObject(A);
 \hspace{1cm}\includegraphics{fig/appetizer.7}
 \end{multicols}
 
-This piece of code creates an instance of {\code Class}, which will be afterward
-identified as {\code A}. This object has the following content properties: a name
+This code creates an object, referenced by its name {\code A}, of the MetaUML-defined type {\code Class}. 
+Object {\code A} has the following content properties: a name
 ({\code MyClass}), a list of attributes ({\code attr1}, {\code attr2})
-and a list of methods ({\code method1}, {\code method2}). The one thing remaining
-before actually drawing {\code A} is to set its location.
+and a list of methods ({\code method1}, {\code method2}). To set the object's location, we assign a value to the 
+so-called ``north-west'' point of the encompassing rectangle, {\code A.nw} --- a point which in actual fact references 
+the upper-left corner.
+
+Every MetaUML visual object has the layout properties shown in figure \ref{fig:properties}. 
+These properties may be used to set the location of any given object, either by assigning to them absolute values,
+or by linking them relatively to other objects via equations.
 
 \begin{figure}
 \centering
 \includegraphics{fig/properties.1}
-\caption{Positioning properties of any MetaUML object (here a class object is depicted).}
+\caption{Layout properties of MetaUML objects. Here, a {\code Class} object is depicted.}
 \label{fig:properties}
 \end{figure}
-
-In {\code A.nw} we refer to the ``north-west'' of the class rectangle, that is
-to its upper-left corner. In general, every MetaUML object has the positioning
-properties given in figure \ref{fig:properties}. These properties are used to set
-where to draw a given object, whether by assigning them absolute values, or by setting
-them relatively to other objects. Suppose that we have defined two classes
-{\code A} and {\code  B}. Then the following code would give a conceivable positioning:
+ 
+The following example demonstrates, respectively, the use of absolute and relative positioning for two classes, {\code A} and {\code  B}.
 
 \begin{multicols}{2}
 \begin{verbatim}
 A.nw = (0,0);
-B.e = A.w + (-20, 0);
+B.w = A.e + (20, 0);
 \end{verbatim}
 \columnbreak
 \includegraphics{fig/appetizer.8}
 \end{multicols}
 
-After the objects are drawn, one may draw links between them, such as inheritance
-or association relations between classes in class diagrams, or transitions between states
-in state machine diagrams. Whichever the purpose is, MetaUML provides a generic
-way of drawing an edge in a diagram's graph:
+After the objects have been drawn, it becomes possible to attach links to them. In a class diagram, inheritance
+or association relations are meaningful links between classes, while in a state machine diagram, transitions between 
+states can be used. Here is the general pattern used by MetaUML for drawing links:
 
 \begin{verbatim}
-link(how-to-draw-information)(path-to-draw);
+link(<how-to-draw-information>)(<path-to-draw>);
 \end{verbatim}
 
-The ``how to draw information'' is actually an object which defines the style
-of the line (e.g. solid, dashed) and the appearance of the heads (e.g. nothing, arrow, diamond).
-One such object, called {\code inheritance}, defines a solid path ending in
-a white triangle. The {\code path-to-draw} parameter is simply a MetaPost path.
-For example, the following code can be used used to represent that class {\code B} is derived from {\code A}:
+The ``how-to-draw-information'' is an object which defines the style of the line (e.g. solid, dashed) and the appearance
+of the heads (e.g. nothing, arrow, diamond). One such object, appropriately called {\code inheritance}, defines a solid
+line style and a white triangle head. The other parameter, the ``path-to-draw'', is simply a MetaPost path.
+
+To represent that class {\code B} is derived from class {\code A}, the following code can be used.
 
 \begin{verbatim}
 link(inheritance)(B.e -- A.w);
 \end{verbatim}
 
-Note that the direction of the path is important, and MetaUML uses it to determine the
-type of adornment to attach at the link ends (if applicable). In our example, a white triangle,
+Note that the direction of the path is important, as MetaUML uses it to determine the
+type of adornment to attach to the link ends (if applicable). In our example, a white triangle,
 denoting inheritance, points towards the end of the path, that is towards class {\code A}.
 
-To sum up, we present a short code and the resulting diagram, typical for just about
-everything else in MetaUML. The positioning of {\code A} does not need to be
-explicitly set because ``floating'' objects are automatically positioned at {\code (0,0)} by their
-draw method.
+Let us sum up with a diagram typical for MetaUML use. Firstly, we define the objects that we want to include
+in our diagram. Secondly, we position these objects relative to each other. Thirdly, we draw the objects. Finally, we
+draw the links, by referencing the layout properties of the previously drawn objects. Note that in our example the
+positioning of {\code A} need not be set explicitly because ``floating'' objects are automatically positioned at 
+{\code (0,0)} by their draw method.
 
 \begin{multicols}{2}
 
 \begin{verbatim}
 input metauml;
+
 beginfig(1);
-  Class.A("A")()();
+  Class.A("A")()();              % 1. Define the objects
   Class.B("B")()();
-  B.e = A.w + (-20, 0);
-  drawObjects(A, B);
-  link(inheritance)(B.e -- A.w);
+  B.w = A.e + (20, 0);           % 2. Position the objects
+  drawObjects(A, B);             % 3. Draw the objects
+  link(inheritance)(B.w -- A.e); % 4. Draw links between objects
 endfig;
 end
 \end{verbatim}
@@ -166,20 +169,20 @@ end
 \includegraphics{fig/appetizer.9}
 \end{multicols}
 
-From a user's perspective, this is all there is to MetaUML. With a reference describing how other
-UML elements are created, one can set out to typeset arbitrary complex diagrams.
+As far as a user is concerned, this is all there is to MetaUML. With a reference describing how the
+UML elements are created, arbitrarily complex diagrams can be crafted.
 
 \section{Class Diagrams}
 
 A class is created as follows:
 
 \begin{verbatim}
-Class.name(class-name)
-  (list-of-attributes)
-  (list-of-methods);
+Class.<name>(<class-name>)
+  (<list-of-attributes>)
+  (<list-of-methods>);
 \end{verbatim}
 
-The suffix {\code name} gives a name to the {\code Class} object (which, of course, represents an UML class).
+The suffix {\code name} gives a name to the {\code Class} object (which, of course, represents a UML class).
 The name of the UML class is a string given by {\code class-name};
 the attributes are given as a comma separated list of strings, {\code list-of-attributes};
 the methods are given as a comma separated list of strings, {\code list-of-attributes}.
@@ -318,7 +321,7 @@ To customize the space around the class name globally, you can set the values of
 
 \subsection{Objects (or Class Instances)}
 
-An UML object (or class instance) is created as follows:
+A UML object (or class instance) is created as follows:
 
 \begin{verbatim}
 Instance.name(object-name)
@@ -340,7 +343,7 @@ drawObject(order);
 
 \subsection{Parametrized Classes (Templates)}
 
-The most convenient way of typesetting a class template in \metauml\ is to use the macro {\code ClassTemplate}.
+The most convenient way of typesetting a class template in MetaUML is to use the macro {\code ClassTemplate}.
 This macro creates a visual object which is appropriately positioned near the class object it adorns.
 
 \begin{verbatim}
@@ -375,7 +378,7 @@ Of course, one can specify both stereotypes and template parameters for a given 
 \subsection{Types of Links}
 
 In this section we enumerate the relations that can be drawn between classes by means
-of \metauml\ macros. Suppose that we have the declared two points, {\code A} (on the left)
+of MetaUML macros. Suppose that we have the declared two points, {\code A} (on the left)
 and {\code B} (on the right):
 
 \begin{verbatim}
@@ -409,7 +412,7 @@ B = (50,0);
 \subsection{Associations}
 In UML an association typically has two of association ends and may have a name specified for it.
 In turn, each association end may specify a multiplicity, a role, a visibility, an ordering.
-These entities are treated in \metauml\ as pictures having specific drawing information
+These entities are treated in MetaUML as pictures having specific drawing information
 (spacings, font).
 
 The first method of creating association ``items'' is by giving them explicit names.
@@ -433,7 +436,7 @@ label.urt("association name" infont "tyxtt",
 \end{multicols}
 
 However, giving names to every association item may become an annoying burden
-(especially when there are many of them). Because of this, \metauml\ also allows for
+(especially when there are many of them). Because of this, MetaUML also allows for
 ``anonymous items''. In this case, the positioning is set by an equation
 which refers to the anonymous item as {\code obj}.
 
@@ -509,7 +512,7 @@ clink(dashedLink)(A, C);
 \hspace{1cm}\includegraphics{fig/note.2}
 \end{multicols}
 
-Now let us see a more complex example, which demontrates the ability of accessing sub-elements in a \metauml\ diagram.
+Now let us see a more complex example, which demontrates the ability of accessing sub-elements in a MetaUML diagram.
 \pagebreak
 
 \begin{multicols}{2}
@@ -787,7 +790,7 @@ draw objectBox(A.human);
 \hspace{1cm}\includegraphics{fig/usecase.3}
 \end{multicols}
 
-Note that in \metauml\ {\code objectBox(X)} is equivalent to {\code X.nw -- X.ne -- X.se -- X.sw -- cycle} for every object {\code X}. {\code A.human} is considered a \metauml\ object, so you can use expressions like {\code A.human.n} or {\code A.human.midx}.
+Note that in MetaUML {\code objectBox(X)} is equivalent to {\code X.nw -- X.ne -- X.se -- X.sw -- cycle} for every object {\code X}. {\code A.human} is considered a MetaUML object, so you can use expressions like {\code A.human.n} or {\code A.human.midx}.
 
 \subsection{Types of Links}
 
@@ -1012,7 +1015,7 @@ link(aggregationUni)
 
 Regardless of how amusing this feature might be, it does become a bit of a nuisance to
 use it in its bare form. When typesetting UML diagrams in good style, one generally
-uses rectangular paths. It is for this kind of style that \metauml\ offers extensive
+uses rectangular paths. It is for this kind of style that MetaUML offers extensive
 support, providing a ``syntactic sugar'' for constructs which can otherwise be
 done by hand, but with some extra effort.
 
@@ -1021,7 +1024,7 @@ done by hand, but with some extra effort.
 The ``Manhattan'' path macros generate a path between two points consisting of one
 horizontal and one vertical segment. The macro {\code pathManhattanX} generates first a
 horizontal segment, while the macro {\code pathManhattanY} generates first a
-vertical segment. In \metauml\ it also matters the direction of a path, so you
+vertical segment. In MetaUML it also matters the direction of a path, so you
 can choose to reverse it by using {\code rpathManhattanX} and {\code rpathManhattanY}
 (note the prefix ``{\code r}''):
 
@@ -1145,7 +1148,7 @@ pathCut(thePath)(objectA, objectB)
 \end{verbatim}
 
 Here, {\code thePath} is a given MetaPost path and {\code objectA} and {\code objectB}
-are two \metauml\ objects. By contract, each \metauml\ object of type, say, {\code X}
+are two MetaUML objects. By contract, each MetaUML object of type, say, {\code X}
 defines a macro {\code X\_border} which returns the path that surrounds it. Because
 of that, {\code pathCut} can make the appropriate modifications to {\code thePath}.
 
@@ -1171,7 +1174,7 @@ clink(how-to-draw-information)(objA, objB);
 \end{verbatim}
 
 The parameter {\code how-to-draw-information} is the same as for the macro {\code link};
-{\code objA} and {\code objB} are two \metauml\ objects.
+{\code objA} and {\code objB} are two MetaUML objects.
 
 Below is an example which involves the inheritance relation:
 
@@ -1190,7 +1193,7 @@ Using equations involving cardinal points, such as {\code A.nw = B.ne + (10,0)},
 good enough for achieving the desired results. However, programs are best to
 be written for human audience, rather than for compilers. It does become a bit
 tiresome to think all the time of cardinal points and figure out the
-direction of positive or negative offsets. Because of that, \metauml\ offers
+direction of positive or negative offsets. Because of that, MetaUML offers
 syntactic sugar which allows for an easier understanding of the intent behind
 the positioning code.
 
@@ -1295,7 +1298,7 @@ a system which mimics quite well object-oriented behavior. Along this line, META
 (\cite{metaobj}) is a library worth mentioning: it provides a high-level objects
 infrastructure along with a battery of predefined objects.
 
-Surprisingly enough, \metauml\ does not use METAOBJ. Instead, it uses a custom written,
+Surprisingly enough, MetaUML does not use METAOBJ. Instead, it uses a custom written,
 lightweight object-oriented infrastructure, provisionally called ``{\code util}''.
 METAOBJ's facilities, although impressive, were perceived by me as being a bit too much
 for what was initially intented as a quick way of getting some UML diagrams layed out.
@@ -1331,7 +1334,7 @@ draw a.sw -- b.se dashed evenly
 
 Note that, despite supposedly having their bottoms alligned,
 ``yummy'' {\it looks} slightly higher than ``cool''. This would be unacceptable
-in an UML class diagram, when roles are placed at the ends of a horizontal association.
+in a UML class diagram, when roles are placed at the ends of a horizontal association.
 Regardless of default spacing being smaller in the {\code util} library,
 the very same unfortunate misalignment effect rears its ugly head:
 
@@ -1368,7 +1371,7 @@ drawObjects(a, b);
 \subsection{The Picture Macro}
 
 We have seen previously the line {\code iPict.ignoreNegativeBase := 1}.
-Who is {\code iPict} and what is it doing in our program? \metauml\
+Who is {\code iPict} and what is it doing in our program? MetaUML
 aims at separating the ``business logic'' (what to draw) from the
 ``interface'' (how to draw). In order to achieve this, it records the ``how to draw''
 information within the so-called {\code Info} structures. The object {\code iPict}
@@ -1401,7 +1404,7 @@ A copy of the default info for a picture, {\code iPict}, has been made within
 the object {\code a} and can be accessed as {\code a.info}. Having a copy of the
 info in each object may seem like an overkill, but it allows for a fine grained
 control of the drawing mode of each individual object. This feature comes in very
-handy when working with a large number of settings, as it is the case for \metauml.
+handy when working with a large number of settings, as it is the case for MetaUML.
 
 Let us imagine for a moment that we have two types of text to write: one with a small font
 and a small margin and one with a big font and a big margin. We could in theory
@@ -1538,8 +1541,8 @@ this is required.
 
 \subsection{The Group Macro}
 
-It is possible to group objects in \metauml. This feature is the cornerstone
-of \metauml, allowing for the easy development of complex objects, such as
+It is possible to group objects in MetaUML. This feature is the cornerstone
+of MetaUML, allowing for the easy development of complex objects, such as
 composite stats in state machine diagrams.
 
 Similarly to the macro {\code Picture}, the structure {\code GroupInfo}
@@ -1720,7 +1723,7 @@ no subsequent effect, since the layout equations are declared and interpreted on
 
 \subsection{Notes on the Implementation of Links}
 
-\metauml\ considers edges in diagram graphs as links. A link is composed of a path and the
+MetaUML considers edges in diagram graphs as links. A link is composed of a path and the
 heads (possible none, one or two). For example, an association has no heads, and one must simply
 draw along the path with a solid pen. An unidirectional aggregation has a solid path and two
 heads: one is an arrow and the other is a diamond. So the template algorithm for drawing a link
@@ -1793,7 +1796,7 @@ $|AA'|$ & {\code iLink.widthA}\\
 $|BB'|$ & {\code iLink.widthB}
 \end{tabular}
 \includegraphics{fig/how-links-work.2}
-\caption{Details on how a link is drawn by \metauml.}
+\caption{Details on how a link is drawn by MetaUML.}
 \label{fig:hlw2}
 \end{figure}
 
@@ -1865,9 +1868,9 @@ We have seen that in MetaUML the ``how to draw'' information is memorized into t
 ``{\code Info}'' structures. For example, the default way in which a {\code Picture} object is
 to be drawn is recorded into an instance of {\code PictureInfo}, named {\code iPict}. In this section we
 present a case study involving the customization of {\code Class} objects. The customization of
-any other \metauml\ objects works similarly. Here we cannot possibly present all the customization
-options for all kinds of \metauml\ objects: this would take too long. Nevertheless, an interested reader can refer
-to the top of the appropriate \metauml\ library file, where {\code Info} structures are defined.
+any other MetaUML objects works similarly. Here we cannot possibly present all the customization
+options for all kinds of MetaUML objects: this would take too long. Nevertheless, an interested reader can refer
+to the top of the appropriate MetaUML library file, where {\code Info} structures are defined.
 For example, class diagram related definitions are in {\code metauml\_class.mp}, activity diagram
 definitions are in {\code metauml\_activity.mp} etc.
 
@@ -1942,7 +1945,7 @@ on our system (as used with the MetaPost {\code infont} operator).
 
 This usage scenario is perhaps more interesting. Suppose that we have two
 types of classes which we want to draw differently. Making the setting adjustments
-for each individual class object would soon become a nuisance. \metauml's solution consists in the
+for each individual class object would soon become a nuisance. MetaUML's solution consists in the
 ability of using predefined ``how to draw'' {\code Info} objects. Let us create such objects:
 
 \begin{verbatim}
