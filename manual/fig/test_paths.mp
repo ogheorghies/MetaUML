@@ -45,7 +45,7 @@ beginfig(2);
   B.sw = A.ne + (20,20);
   
   drawObjects(A, B);
-	
+
   link(associationUni)(pathManhattanX(A.e, B));
 endfig;
 

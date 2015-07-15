@@ -178,7 +178,7 @@ beginfig(5);
 endfig;
 
 beginfig(6);
-  item.foo(iPictBoxed)("foo bar cool")(foo.nw = (0,0));
+  item.foo(iPictBoxed)("foo bar baz")(foo.nw = (0,0));
   item.bar(iPict)("x: int")(bar.nw = (20,20));
 
   aitem(iPictBoxed)("an anounymous item")(obj.nw = (40,10));

@@ -32,7 +32,7 @@ endfig;
 beginfig(2);
     Package.nameOnlyOnTopPackage("Name on top")();
     nameOnlyOnTopPackage.info.forceEmptyContent := 1;
-    Package.nameOnlyInMiddlePackage("By default name", "is in the middle")();
+    Package.nameOnlyInMiddlePackage("By default, the name", "is in the middle")();
 
     Class.cl("A class")("Attribute")("Method");
     Package.notEmptyPackage("Contains class")(cl);

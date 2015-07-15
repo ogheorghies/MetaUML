@@ -29,7 +29,7 @@ beginfig(1);
 endfig;
 
 beginfig(2);
-   EState.myState(iState)("the light is", "visibly on")();
+   EState.myState(iState)("The light is", "visibly on")();
    drawObject(myState);
 
    State.anotherState("Another nice state")();

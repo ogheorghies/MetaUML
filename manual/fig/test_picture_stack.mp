@@ -80,7 +80,7 @@ endfig;
 
 beginfig(6);
     save custom;
-    
+
     pickup pencircle scaled 4pt;
     drawdot origin;
 

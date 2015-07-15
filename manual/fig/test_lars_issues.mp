@@ -72,8 +72,8 @@ endfig;
 
 beginfig(2);
   Begin.b;
-  Activity.A("Eat something good", "from the kitchen");
-  Activity.B("Read a book");
+  Activity.A("Activity A", "on line two");
+  Activity.B("Activity B");
   End.e;
 
   % or other positioning code...
@@ -88,7 +88,7 @@ beginfig(2);
   clink(transition)(A, B);
   link(transition)(pathStepX(B.e, e.e, 30));
 
-  item(iGuard)("foo")(obj.sw = .5[b.s, A.n]);
+  item(iGuard)("guard")(obj.sw = .5[b.s, A.n]);
 endfig;
 
 end;

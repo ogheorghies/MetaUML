@@ -22,14 +22,14 @@ input metauml_links;
 input metauml_class_relations;
 
 beginfig(1);
-  Note.foo("Antananarivo", "Machupichu");
+  Note.foo("This is the first line", "and this the second one.");
   drawObject(foo);
 endfig;
 
 beginfig(2);
   save foo;
-  Note.foo("Please disregard this note");
-  Note.bar("Please take the other note", "very seriously");
+  Note.foo("Please disregard this note.");
+  Note.bar("Please take the other note", "very seriously.");
 
   bar.s = foo.n + (10,20);
   drawObjects(foo, bar);
