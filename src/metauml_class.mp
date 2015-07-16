@@ -123,7 +123,8 @@ iInterface.iAttributeStack.top := 0;
 iInterface.iAttributeStack.bottom := 0;
 iInterface.iName.iFont.name := metauml_defaultFontOblique;
 
-ClassInfoCopy.iAbstractClass(iInterface);
+ClassInfoCopy.iAbstractClass(iClass);
+iClass.iName.iFont.name := metauml_defaultFontOblique;
 
 %
 % CLASS
