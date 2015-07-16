@@ -33,9 +33,8 @@ visibilityPackage:="~";
 
 vardef ClassInfo@#=
   attributes(@#);
-  var(numeric) featureVisibilitySpacing, visibilityWidth, visibilityHeight;
   var(color)   foreColor, borderColor;
-  var(string)  featureVisibilityMode;
+  var(string)  featureVisibilityMode; % reserved for future use
 
   FontInfo.@#nameFont(metauml_defaultFont, defaultscale);
 
@@ -45,10 +44,7 @@ vardef ClassInfo@#=
 
   ShadeInfo.@#iShade;
 
-  @#featureVisibilitySpacing := 2;
   @#featureVisibilityMode := "individual"; % "none", "grouped"
-  @#visibilityWidth := 7;
-  @#visibilityHeight := 6.75;
 
   @#foreColor := .9white;
   @#borderColor := black;
@@ -70,7 +66,7 @@ vardef ClassInfo@#=
   @#iAttributeStack.iPict.ignoreNegativeBase := 1;
   @#iMethodStack.iPict.ignoreNegativeBase := 1;
   @#iStereotypeStack.iPict.ignoreNegativeBase := 1;
-  
+
   PictureStackInfoCopy.@#iAttributeVisibilityStack (@#iAttributeStack);
   PictureStackInfoCopy.@#iMethodVisibilityStack (@#iMethodStack);
   
@@ -93,10 +89,6 @@ vardef ClassInfoCopy@#(text src)=
   FontInfoCopy.@#stereotypeFont(src.stereotypeFont);
 
   ShadeInfoCopy.@#iShade(src.iShade);
-
-  @#featureVisibilitySpacing := src.featureVisibilitySpacing;
-  @#visibilityWidth := src.visibilityWidth;
-  @#visibilityHeight := src.visibilityHeight;
 
   @#foreColor := src.foreColor;
   @#borderColor := src.borderColor;
