@@ -215,27 +215,21 @@ vardef classStereotypes@#(text stereotypes)=
   endfor;
 enddef;
 
-vardef EClass@#(text _info)(expr name)(text _attributes)(text _methods)=
+vardef EClass@#(text _info)(expr name)(text attributes)(text methods)=
   log "EClass begin: " & str @#;
   defClass@#(name);
 
   log "Copying class info";
   ClassInfoCopy.@#info(_info);
 
-  for a=_attributes:
+  for a=attributes:
     log "Adding attribute ", a;
     addAttribute@#(a);
   endfor;
-  for m=_methods:
+  for m=methods:
     log "Adding method ", m;
     addMethod@#(m);
   endfor;
-
-  EPictureStack.@#attributeStack(@#info.iAttributeStack)
-    (scantokens listArray(@#attributes)(@#nAttrs))("vleftbase");
-
-  EPictureStack.@#methodStack(@#info.iMethodStack)
-    (scantokens listArray(@#methods)(@#nMethods))("vleftbase");
 enddef;
 
 vardef Class@#(expr name)(text attributes)(text methods)=
@@ -281,8 +275,13 @@ vardef Class_layout@# =
        (scantokens listArray(@#stereotypes)(@#nStereotypes))("vcenterbase");
 
     EPicture.@#namePict(@#info.iName)(@#name);
+    
+    layoutObjects(@#stereotypeStack, @#namePict);
 
     % Define attributes
+
+    EPictureStack.@#attributeStack(@#info.iAttributeStack)
+       (scantokens listArray(@#attributes)(@#nAttrs))("vleftbase");
 
     vardef joinCallbackAttributesVisibility@#=
         setObjectJoin(pb.bottom = @#.attributeStack.pict[index].bottom; pb.midx = pa.midx);
@@ -295,6 +294,9 @@ vardef Class_layout@# =
 
     % Define methods
 
+    EPictureStack.@#methodStack(@#info.iMethodStack)
+       (scantokens listArray(@#methods)(@#nMethods))("vleftbase");
+
     vardef joinCallbackMethodsVisibility@#=
         setObjectJoin(pb.bottom = @#.methodStack.pict[index].bottom; pb.midx = pa.midx);
         setObjectJoinFirst(pa.bottom = @#.methodStack.pict[index].bottom);
@@ -306,10 +308,11 @@ vardef Class_layout@# =
 
     % Integrate components
 
+    layoutObjects(@#attributeStack, @#methodStack);
+
     @#attributeStack.left = @#methodStack.left;
     @#methodStack.top = @#attributeStack.bottom;
 
-    layoutObjects(@#stereotypeStack, @#namePict, @#attributeStack, @#methodStack);
     layoutObjects(@#attributeVisibilityStack, @#methodVisibilityStack);
 
     @#attributeVisibilityStack.midx = @#methodVisibilityStack.midx;
