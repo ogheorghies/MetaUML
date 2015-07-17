@@ -20,7 +20,8 @@ input metauml;
 
 beginfig(1);
   Class.A("Point")
-    ("#x:int", "#y:int")
+    ("#x:int", 
+     "#y:int")
     ("+set(x:int, y:int)",
      "+getX():int",
      "+getY():int",
