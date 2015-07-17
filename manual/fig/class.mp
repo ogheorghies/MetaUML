@@ -24,7 +24,8 @@ beginfig(1);
     ("+set(x:int, y:int)",
      "+getX():int",
      "+getY():int",
-     "-debug():void");
+     "-debug():void",
+     "test():void");
   drawObject(A);
 endfig;
 
@@ -32,7 +33,7 @@ beginfig(2);
   save A, T;
   
   Class.A("User")()();
-  classStereotypes.A("<<interface>>", "<<home>>");
+  Class_stereotypes.A("<<interface>>", "<<home>>");
 
   drawObject(A);
 endfig;
@@ -93,27 +94,40 @@ beginfig(12);
 endfig;
 
 beginfig(13)
-	save A;
-	
-	Class.A("MyModel")()();
-	A.info.iAttributeStack.top := 0;
-	A.info.iAttributeStack.bottom := 0;
-	A.info.iMethodStack.top := 0;
-	A.info.iMethodStack.bottom := 0;
-	
-	drawObject(A);
+  save A;
+
+  Class.A("MyModel")()();
+  A.info.iName.top    := 10;
+  A.info.iName.bottom := 10;
+  A.info.iAttributeStack.top := 0;
+  A.info.iAttributeStack.bottom := 0;
+  A.info.iMethodStack.top := 0;
+  A.info.iMethodStack.bottom := 0;
+
+  drawObject(A);
 endfig;
 
 beginfig(14)
-	save A, B;
-	
-	EClass.A(iClassNameOnly)("MyModel")()();
-	ClassName.B("AnotherModel");
-	classStereotypes.B("<<smart>>");
-	
-	topToBottom(20)(A, B);
-	
-	drawObjects(A, B);
+  save A, B;
+
+  EClass.A(iClassNameOnly)("MyModel")()();
+  ClassName.B("AnotherModel");
+  classStereotypes.B("<<smart>>");
+
+  topToBottom(20)(A, B);
+
+  drawObjects(A, B);
+endfig;
+
+beginfig(15);
+  save A;
+
+  Class.A("Point")
+    ("#x:int", "#y:int")
+    ("+toString():String");
+  Class_noVisibilityMarkers.A;
+
+  drawObject(A);
 endfig;
 
 end

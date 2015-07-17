@@ -10,12 +10,12 @@ _metauml_class_mp:=1;
 % The guard values (such as _metauml_mp) do ensure that the file isn't loaded multiple times, 
 % but this macro makes sure that MetaPost won't try to load the file and display a message for that.
 def inputonce text libraryFile=
-	if not known scantokens ("_" & str libraryFile & "_mp"):
-		%includeonce% show "Loading " & str libraryFile;
-		scantokens ("input " & str libraryFile);
-	else:
-		%includeonce% show str libraryFile & " already loaded.";
-	fi;
+  if not known scantokens ("_" & str libraryFile & "_mp"):
+    %includeonce% show "Loading " & str libraryFile;
+    scantokens ("input " & str libraryFile);
+  else:
+    %includeonce% show str libraryFile & " already loaded.";
+  fi;
 enddef;
 
 inputonce metauml_defaults;
@@ -34,7 +34,7 @@ visibilityPackage:="~";
 vardef ClassInfo@#=
   attributes(@#);
   var(color)   foreColor, borderColor;
-  var(string)  featureVisibilityMode; % reserved for future use
+  var(string)  featureVisibilityMode;
 
   FontInfo.@#nameFont(metauml_defaultFont, defaultscale);
 
@@ -124,7 +124,7 @@ iInterface.iAttributeStack.bottom := 0;
 iInterface.iName.iFont.name := metauml_defaultFontOblique;
 
 ClassInfoCopy.iAbstractClass(iClass);
-iClass.iName.iFont.name := metauml_defaultFontOblique;
+iAbstractClass.iName.iFont.name := metauml_defaultFontOblique;
 
 %
 % CLASS
@@ -162,7 +162,7 @@ vardef addAttribute@#(expr pcontent) =
      (not (visibility = visibilityPackage)):
 
     @#.attributes[@#.nAttrs] := pcontent;
-    @#.attributesVisibility[@#.nAttrs] := visibilityProtected;
+    @#.attributesVisibility[@#.nAttrs] := visibilityPackage;
   else:
     save from;
     from := 1;
@@ -184,7 +184,7 @@ vardef addMethod@#(expr pcontent) =
      (not (visibility = visibilityPackage)):
 
     @#.methods[@#.nMethods] := pcontent;
-    @#.methodsVisibility[@#.nMethods] := visibilityProtected;
+    @#.methodsVisibility[@#.nMethods] := visibilityPackage;
   else:
     save from;
     from := 1;
@@ -203,9 +203,7 @@ vardef classStereotype@#(expr pcontent) =
 enddef;
 
 vardef classStereotypes@#(text stereotypes)=
-  for stereotype = stereotypes:
-    classStereotype@#(stereotype);
-  endfor;
+  Class_stereotypes.@#(stereotypes);
 enddef;
 
 vardef EClass@#(text _info)(expr name)(text attributes)(text methods)=
@@ -257,6 +255,10 @@ vardef Class_border@#=
   objectBox(@#)
 enddef;
 
+vardef Class_noVisibilityMarkers@#=
+  @#info.featureVisibilityMode := "none";
+enddef;
+
 vardef Class_layout@# =
   if @#laidout = 1:
     log "Class " & (str @#) & " has already been layed out";
@@ -276,31 +278,45 @@ vardef Class_layout@# =
     EPictureStack.@#attributeStack(@#info.iAttributeStack)
        (scantokens listArray(@#attributes)(@#nAttrs))("vleftbase");
 
-    vardef joinCallbackAttributesVisibility@#=
-        setObjectJoin(pb.bottom = @#.attributeStack.pict[index].bottom; pb.midx = pa.midx);
-        setObjectJoinFirst(pa.bottom = @#.attributeStack.pict[index].bottom);
-    enddef;
-
-    EPictureStack.@#attributeVisibilityStack(@#info.iAttributeVisibilityStack)
-       (scantokens listArray(@#attributesVisibility)(@#nAttrs))
-       ("joinCallbackAttributesVisibility." & (str @#));
+    if @#info.featureVisibilityMode = "individual":
+        vardef joinCallbackAttributesVisibility@#=
+            setObjectJoin(pb.bottom = @#.attributeStack.pict[index].bottom; pb.midx = pa.midx);
+            setObjectJoinFirst(pa.bottom = @#.attributeStack.pict[index].bottom);
+        enddef;
+    
+        EPictureStack.@#attributeVisibilityStack(@#info.iAttributeVisibilityStack)
+           (scantokens listArray(@#attributesVisibility)(@#nAttrs))
+           ("joinCallbackAttributesVisibility." & (str @#));
+    elseif @#info.featureVisibilityMode = "none":
+        EPicture.@#attributeVisibilityStack(iPictNoMargins)("");
+    else:
+        show "Unknown feature visibility mode", @#featureVisibilityMode;
+        1=2;
+    fi;
 
     % Define methods
 
     EPictureStack.@#methodStack(@#info.iMethodStack)
        (scantokens listArray(@#methods)(@#nMethods))("vleftbase");
 
-    vardef joinCallbackMethodsVisibility@#=
-        setObjectJoin(pb.bottom = @#.methodStack.pict[index].bottom; pb.midx = pa.midx);
-        setObjectJoinFirst(pa.bottom = @#.methodStack.pict[index].bottom);
-    enddef;
+    if @#info.featureVisibilityMode = "individual":
+      vardef joinCallbackMethodsVisibility@#=
+          setObjectJoin(pb.bottom = @#.methodStack.pict[index].bottom; pb.midx = pa.midx);
+          setObjectJoinFirst(pa.bottom = @#.methodStack.pict[index].bottom);
+      enddef;
 
-    EPictureStack.@#methodVisibilityStack(@#info.iMethodVisibilityStack)
-       (scantokens listArray(@#methodsVisibility)(@#nMethods))
-       ("joinCallbackMethodsVisibility." & (str @#));
+      EPictureStack.@#methodVisibilityStack(@#info.iMethodVisibilityStack)
+         (scantokens listArray(@#methodsVisibility)(@#nMethods))
+         ("joinCallbackMethodsVisibility." & (str @#));
+    elseif @#info.featureVisibilityMode = "none":
+        EPicture.@#methodVisibilityStack(iPictNoMargins)("");
+    else:
+        show "Unknown feature visibility mode", @#featureVisibilityMode;
+        1=2;
+    fi;
 
     % Integrate components
-
+    show layoutObjects(@#attributeStack, @#methodStack);
     layoutObjects(@#attributeStack, @#methodStack);
 
     @#attributeStack.left = @#methodStack.left;
@@ -310,10 +326,10 @@ vardef Class_layout@# =
 
     @#attributeVisibilityStack.midx = @#methodVisibilityStack.midx;
 
-    if @#.nMethods = 0:
+    if (@#.nMethods = 0) or (@#info.featureVisibilityMode="none"):
        @#methodVisibilityStack.top = @#methodStack.top;
     fi;
-    if @#.nAttrs = 0:
+    if (@#.nAttrs = 0) or (@#info.featureVisibilityMode="none"):
        @#attributeVisibilityStack.top = @#attributeStack.top;
     fi;
 
@@ -376,4 +392,10 @@ vardef Class_setDebugMode@#=
   @#.info.iAttributeVisibilityStack.iPict.boxed := 1;
   @#.info.iMethodVisibilityStack.boxed := 1;
   @#.info.iMethodVisibilityStack.iPict.boxed := 1;
+enddef;
+
+vardef Class_stereotypes@#(text stereotypes)=
+  for stereotype = stereotypes:
+    classStereotype@#(stereotype);
+  endfor;
 enddef;

@@ -63,13 +63,13 @@ beginfig(5);
   save P, Q;
 
   Class.P("AAA")()();
-  classStereotypes.P("<<ooo>>","<<home>>", "<<interface>>");
+  Class_stereotypes.P("<<ooo>>","<<home>>", "<<interface>>");
   Class_setDebugMode.P;
   P.nw=(0,0);
   Class_draw.P;
 
   Class.Q("AAA")()();
-  classStereotypes.Q("<<ooo>>","<<home>>", "<<interface>>");
+  Class_stereotypes.Q("<<ooo>>","<<home>>", "<<interface>>");
   Q.nw=P.ne + (20,0);
   Class_draw.Q;
 endfig;
@@ -78,7 +78,7 @@ beginfig(6);
     save A;
 
     Class.A("User6")()();
-    classStereotypes.A("<<interface>>","<<home>>");
+    Class_stereotypes.A("<<interface>>","<<home>>");
     A.nw=(0,0);
     drawObject(A);
 endfig;
@@ -145,19 +145,12 @@ endfig;
 beginfig(16);
   save A, B, C;
 
-  iClass.featureVisibilityMode := "none";
   Class.A("Foo")
     ("+a: int", "-b: int", "#c: int", "d: int")
     ("+x()", "-y()", "#z()", "t()");
+    Class_noVisibilityMarkers.A;
 
-  iClass.featureVisibilityMode := "individual";
-  Class.B("Foo")
-    ("+a: int", "-b: int", "#c: int", "d: int")
-    ("+x()", "-y()", "#z()", "t()");
-
-  leftToRight(10)(A, B);
-
-  drawObjects(A,B);
+  drawObjects(A);
 endfig;
 
 end

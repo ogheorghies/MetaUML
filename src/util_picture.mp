@@ -122,6 +122,7 @@ vardef PictureInfo_toString@#=
 enddef;
 
 PictureInfo.iPict(2, 2, 2, 2)(iFont);
+PictureInfo.iPictNoMargins(0, 0, 0, 0)(iFont);
 
 PictureInfoCopy.iPictBoxed(iPict);
 iPictBoxed.boxed := 1;

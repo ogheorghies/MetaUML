@@ -135,7 +135,7 @@ The ``how-to-draw-information'' is an object which defines the style of the line
 of the heads (e.g. nothing, arrow, diamond). One such object, appropriately called {\code inheritance}, defines a solid
 line style and a white triangle head. The other parameter, the ``path-to-draw'', is simply a MetaPost path.
 
-To represent that class {\code B} is derived from class {\code A}, the following code can be used.
+For example, the following call draws an inheritance relation from class {\code B} to class {\code A}.
 
 \begin{verbatim}
 link(inheritance)(B.e -- A.w);
@@ -182,17 +182,15 @@ Class.<name>(<class-name>)
   (<list-of-methods>);
 \end{verbatim}
 
-The suffix {\code name} gives a name to the {\code Class} object (which, of course, represents a UML class).
-The name of the UML class is a string given by {\code class-name};
-the attributes are given as a comma separated list of strings, {\code list-of-attributes};
-the methods are given as a comma separated list of strings, {\code list-of-attributes}.
-The list of attributes and the list of methods may be void.
+The suffix {\code <name>} specifies an identifier for the newly created {\code Class} object 
+(which, of course, represents a UML class).
+The name of the UML class is a string given by {\code <class-name>};
+the attributes and methods are given as list of strings, {\code <list-of-attributes>} and {\code <list-of-methods>} 
+respectively. The list of attributes and the list of methods may be void.
 
-Each of the strings representing an attribute or a method may begin with a visibility marker: ``$+$'' for
-public, ``\#'' for protected and ``$-$'' for private. MetaUML interprets this marker and renders a
-graphic stereotype in form of a lock which may be opened, semi-closed and closed, respectively.
-
-Here is an example:
+An attribute or a method string may begin with a visibility marker: ``$+$'' for
+public, ``\#'' for protected, ``$-$'' for private, and ``\textasciitilde'' for package private. 
+The default visibility is package private.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -201,39 +199,55 @@ Class.A("Point")
   ("+set(x:int, y:int)",
    "+getX():int",
    "+getY():int",
-   "-debug():void");
+   "-debug():void",
+   "test():void");
 drawObject(A);
 \end{verbatim}
 \columnbreak
 \includegraphics{fig/class.1}
 \end{multicols}
 
+To disable showing the visibility markers, use {\code Class\_noVisibilityMarkers}, as shown below:
+
+\begin{multicols}{2}
+\begin{verbatim}
+  Class.A("Point")
+    ("#x:int", "#y:int")
+    ("+toString():String");
+  Class_noVisibilityMarkers.A;
+
+  drawObject(A);
+\end{verbatim}
+\columnbreak
+\includegraphics{fig/class.15}
+\end{multicols}
+
 \subsection{Stereotypes}
 
-After a class is created, its stereotypes may be specified by using the macro {\code classStereotypes}:
+After a class is created, but before it is drawn, its stereotypes may be specified by using {\code Class\_stereotypes}:
 
 \begin{verbatim}
-classStereotypes.name(list-of-stereotypes);
+Class_stereotypes.<name>(<list-of-stereotypes>);
 \end{verbatim}
 
-Here, {\code name} is the object name of a previously created class and {\code list-of-stereotypes}
+Here, {\code <name>} is the object name of a previously created class and {\code <list-of-stereotypes>}
 is a comma separated list of strings. Here is an example:
 
 \begin{multicols}{2}
 \begin{verbatim}
 Class.A("User")()();
-classStereotypes.A("<<interface>>",
-                   "<<home>>");
+Class_stereotypes.A("<<interface>>","<<home>>");
 
 drawObject(A);
 \end{verbatim}
 \columnbreak
-\hspace{1cm}\includegraphics{fig/class.2}
+\hspace{3cm}\includegraphics{fig/class.2}
 \end{multicols}
 
 \subsection{Interfaces and Abstract Classes}
 
-At times it is prefered to typeset the name of an interface in an oblique font, rather than using the ``interface'' stereotype. This can be easily achieved by using the macro:
+At times it is preferred to write the name of an interface in an oblique font, rather than using the ``interface''
+stereotype. This can be easily achieved by using the macro {\code Interface}:
 
 \begin{verbatim}
 Interface.name(class-name)
@@ -259,8 +273,8 @@ EClass.A(iInterface)("Observer")()
       ("+update(src:Object)");
 \end{verbatim}
 
-Along the same line, here's how abstract classes can be drawn:
-
+Abstract classes can be drawn similarly using the {\code iAbstractClass} style:
+\begin{samepage}
 \begin{multicols}{2}
 \begin{verbatim}
 EClass.A(iAbstractClass)("Observable")
@@ -273,8 +287,9 @@ drawObject(A);
 \columnbreak
 \hspace{1cm}\includegraphics{fig/class.12}
 \end{multicols}
+\end{samepage}
 
-If you prefer, you can use the syntactic sugar:
+If you prefer, you can use equivalent construct:
 
 \begin{verbatim}
 AbstractClass.A("Observable")
@@ -285,11 +300,14 @@ AbstractClass.A("Observable")
 
 \subsection{Displaying Class Name Only}
 
-If you want the empty methods and attributes compartments in a class not being displayed, one way is to set the spacing at their top and the bottom to {\code 0}:
-
+If you want the empty methods and attributes compartments in a class not being displayed, one way is to set the spacing
+at their top and the bottom to {\code 0}:
+\begin{samepage}
 \begin{multicols}{2}
 \begin{verbatim}
 Class.A("MyModel")()();
+A.info.iName.top    := 10;
+A.info.iName.bottom := 10;
 A.info.iAttributeStack.top := 0;
 A.info.iAttributeStack.bottom := 0;
 A.info.iMethodStack.top := 0;
@@ -300,14 +318,15 @@ drawObject(A);
 \columnbreak
 \hspace{1cm}\includegraphics{fig/class.13}
 \end{multicols}
+\end{samepage}
 
-There are also specific formating macros defined for this usage scenarios, the formatting information object {\code iClassNameOnly} and the syntactic sugar macro {\code ClassName}:
+The same effect can be achieved by using the formatting information object {\code iClassNameOnly} or the {\code ClassName} macro:
 
 \begin{multicols}{2}
 \begin{verbatim}
 EClass.A(iClassNameOnly)("MyModel")()();
 ClassName.B("AnotherModel");
-classStereotypes.B("<<smart>>");
+Class_stereotypes.B("<<smart>>");
 
 topToBottom(20)(A, B);
 
@@ -481,7 +500,10 @@ A note is created as follows:
 Note.name(list-of-lines);
 \end{verbatim}
 
-The suffix {\code name} is the name of the {\code Note} object. The comma separated list of strings, {\code list-of-lines}, gives the text contents of the note object, each string being drawn on its own line.
+The suffix {\code name} is the name of the {\code Note} object. The contents of the note is given by a comma-separated
+list of strings, {\code list-of-lines}, gives the text contents of the note object, each string being drawn on its own
+line.
+
 Here is an example:
 
 \begin{multicols}{2}
