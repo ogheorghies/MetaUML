@@ -30,22 +30,20 @@ inputonce util_log;
 %                                                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-vardef PictureStackInfo@#(expr pleft, pright, ptop, pbottom)(text pspacing)(text ppictInfo)=
+vardef PictureStackInfo@#(expr marginLeft, marginRight, marginTop, marginBottom)(text _spacing)(text _pictInfo)=
   attributes(@#);
   var(numeric) boxed;
   var(color) borderColor;
-
-  var(numeric) left, right, top, bottom;
   var(numeric) spacing;
 
-  Margins@#(pleft, pright, ptop, pbottom);
+  Margins@#(marginLeft, marginRight, marginTop, marginBottom);
 
-  @#spacing := pspacing;
+  @#spacing := _spacing;
 
   @#boxed := 0;
   @#borderColor := green;
 
-  PictureInfoCopy.@#iPict(ppictInfo);
+  PictureInfoCopy.@#iPict(_pictInfo);
 enddef;
 
 vardef PictureStackInfoCopy@#(text src)=
