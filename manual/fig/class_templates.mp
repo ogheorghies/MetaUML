@@ -17,29 +17,13 @@
 
 input metauml;
  
-beginfig(1);     
+beginfig(1);
   Class.V("Vector")("elements: T(n)")();
   Template.T("T", "n: int");
   Template_attachToClass.T(V);
-  
+
   drawObjects(V);
-  show "-----------------------------";
   drawObjects(T);
-endfig;
-
-beginfig(2);
-%   save P,C;
-   
-%   newClass.P("Person")()();
-%   newClass.C("Company")()();
-  
-%   drawClassAt.P ( P.nw = (0,0) );
-%   d rawClassAt.C ( C.w = P.e + (150,0) );
-  
-%   drawRelation(association)(P.e -- C.w);
-
-%   assocItem("employee", item.sw = P.e);
-%   assocItem("works for", item.n = .5[P.e,C.w]);
 endfig;
 
 end
