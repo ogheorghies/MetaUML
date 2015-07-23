@@ -71,9 +71,9 @@ beginfig(4);
 endfig;
 
 beginfig(5);
-    vardef joinFunction= enddef;
-    PictureStack.custom("itemA", "item B long", "C")
-        ("joinFunction");
+    vardef joinCallback= enddef;
+    PictureStack.custom("A.A", "B__________B", "C-----C")
+        ("joinCallback");
         
     drawObject(custom);
 endfig;
@@ -101,6 +101,30 @@ beginfig(6);
         ("joinCallbackB");
 
     drawObjects(customA, customB);
+endfig;
+
+beginfig(7);
+    save stackX;
+    save stylePA, stylePB;
+    save stylePictureStack;
+
+    PictureInfoCopy.stylePA(iPict);
+    stylePA.borderColor := green;
+    stylePA.boxed := 1;
+
+    PictureInfoCopy.stylePB(iPict);
+    stylePB.borderColor := red;
+    stylePB.boxed := 1;
+
+    PictureStackInfoCopy.stylePictureStack(iStack);
+
+    def styleSelector(expr i)= if i mod 2 = 0: stylePA else: stylePB fi enddef;
+
+    stylePictureStack.itemStyleCallback := "styleSelector";
+
+    EPictureStack.stackX(stylePictureStack)("a","b","c","d","e")("vcenter");
+
+    drawObjects(stackX);
 endfig;
 
 end

@@ -35,6 +35,7 @@ vardef PictureStackInfo@#(expr marginLeft, marginRight, marginTop, marginBottom)
   var(numeric) boxed;
   var(color) borderColor;
   var(numeric) spacing;
+  var(string) itemStyleCallback;
 
   Margins@#(marginLeft, marginRight, marginTop, marginBottom);
 
@@ -43,12 +44,15 @@ vardef PictureStackInfo@#(expr marginLeft, marginRight, marginTop, marginBottom)
   @#boxed := 0;
   @#borderColor := green;
 
+  @#itemStyleCallback := "";
+
   PictureInfoCopy.@#iPict(_pictInfo);
 enddef;
 
 vardef PictureStackInfoCopy@#(text src)=
   PictureStackInfo@#(src.left, src.right, src.top, src.bottom)(src.spacing)(src.iPict);
 
+  @#itemStyleCallback := src.itemStyleCallback;
   @#boxed := src.boxed;
   @#borderColor := src.borderColor;
 enddef;
@@ -75,9 +79,15 @@ vardef EPictureStack@#(text pictStackInfo)(text thePictures)(text how)=
     @#joinMethod := l;
   endfor;
 
+  show "@#info.itemStyleCallback", @#info.itemStyleCallback;
+
   @#nItems := 0;
   for p=thePictures:
-    EPicture.@#pict[@#nItems](@#info.iPict)(p);
+    if (@#info.itemStyleCallback <> ""):
+      EPicture.@#pict[@#nItems](scantokens (@#info.itemStyleCallback)(@#nItems))(p);
+    else:
+      EPicture.@#pict[@#nItems](@#info.iPict)(p);
+    fi;
     @#nItems := @#nItems + 1;
   endfor;
 
