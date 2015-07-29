@@ -30,12 +30,15 @@ inputonce util_log;
 %                                                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-vardef PictureStackInfo@#(expr marginLeft, marginRight, marginTop, marginBottom)(text _spacing)(text _pictInfo)=
+%% Style for a stack of child pictures with the given margins, spacing between children, and a common child style.
+%% If child style supplier @#childStyleSupplier is set, it takes precedence over the common child style.
+%% The child style supplier must be the name of a macro taking a child index as an argument and returning a child style.
+vardef PictureStackInfo@#(expr marginLeft, marginRight, marginTop, marginBottom)(text _spacing)(text _childStyle)=
   attributes(@#);
   var(numeric) boxed;
   var(color) borderColor;
   var(numeric) spacing;
-  var(string) itemStyleCallback;
+  var(string) childStyleSupplier;
 
   Margins@#(marginLeft, marginRight, marginTop, marginBottom);
 
@@ -44,20 +47,19 @@ vardef PictureStackInfo@#(expr marginLeft, marginRight, marginTop, marginBottom)
   @#boxed := 0;
   @#borderColor := green;
 
-  @#itemStyleCallback := "";
+  @#childStyleSupplier := "";
 
-  PictureInfoCopy.@#iPict(_pictInfo);
+  PictureInfoCopy.@#iPict(_childStyle);
 enddef;
 
 vardef PictureStackInfoCopy@#(text src)=
   PictureStackInfo@#(src.left, src.right, src.top, src.bottom)(src.spacing)(src.iPict);
 
-  @#itemStyleCallback := src.itemStyleCallback;
+  @#childStyleSupplier := src.childStyleSupplier;
   @#boxed := src.boxed;
   @#borderColor := src.borderColor;
 enddef;
 
-log "*** Creating iStack...";
 PictureStackInfo.iStack(2, 2, 2, 2)(2)(iPict);
 
 vardef EPictureStack@#(text pictStackInfo)(text thePictures)(text how)=
@@ -79,12 +81,10 @@ vardef EPictureStack@#(text pictStackInfo)(text thePictures)(text how)=
     @#joinMethod := l;
   endfor;
 
-  show "@#info.itemStyleCallback", @#info.itemStyleCallback;
-
   @#nItems := 0;
   for p=thePictures:
-    if (@#info.itemStyleCallback <> ""):
-      EPicture.@#pict[@#nItems](scantokens (@#info.itemStyleCallback)(@#nItems))(p);
+    if (@#info.childStyleSupplier <> ""):
+      EPicture.@#pict[@#nItems](scantokens (@#info.childStyleSupplier)(@#nItems))(p);
     else:
       EPicture.@#pict[@#nItems](@#info.iPict)(p);
     fi;

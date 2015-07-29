@@ -63,13 +63,13 @@ beginfig(5);
   save P, Q;
 
   Class.P("AAA")()();
-  Class_stereotypes.P("<<ooo>>","<<home>>", "<<interface>>");
+  Class_stereotypes.P("ooo", "home", "interface");
   Class_setDebugMode.P;
   P.nw=(0,0);
   Class_draw.P;
 
   Class.Q("AAA")()();
-  Class_stereotypes.Q("<<ooo>>","<<home>>", "<<interface>>");
+  Class_stereotypes.Q("ooo", "home", "interface");
   Q.nw=P.ne + (20,0);
   Class_draw.Q;
 endfig;

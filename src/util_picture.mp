@@ -77,13 +77,15 @@ vardef PictureInfo@#(expr pleft, pright, ptop, pbottom)(text pfont)=
   %%
   var(numeric) fixedWidth, fixedHeight;
 
-  %% Controls how the contents of the picture is to be alligned relatively
-  %% to the picture margins. Can be one of "left", "centered", defaults to
+  %% Controls how the contents of the picture is to be aligned relatively
+  %% to the picture margins. Can be one of "left", "centered", and defaults to
   %% "left". The "centered" setting is useful for Picture-s whose fixedWidth
   %% is set to a given value.
   %%
   var(string) halign, valign;
-  
+
+  var(string) textDecoration;
+
   @#boxed := 0;
   @#borderColor := blue;
 
@@ -94,7 +96,9 @@ vardef PictureInfo@#(expr pleft, pright, ptop, pbottom)(text pfont)=
 
   @#halign := "left";
   @#valign := "bottom";
-  
+
+  @#textDecoration := "none";
+
   Margins.@#(pleft, pright, ptop, pbottom);
 
   FontInfoCopy.@#iFont(pfont);
@@ -106,7 +110,8 @@ vardef PictureInfoCopy@#(text src)=
   @#boxed := src.boxed;
   @#borderColor := src.borderColor;
   @#ignoreNegativeBase := src.ignoreNegativeBase;
-  
+  @#textDecoration := src.textDecoration;
+
   @#fixedWidth := src.fixedWidth;
   @#fixedHeight := src.fixedHeight;
   
@@ -212,7 +217,7 @@ vardef Picture_layout@# =
     elseif @#info.halign = "center":
       xdelta__ := (@#width-pictWidth(@#pict))/2;
     else:
-      2 = 3; % throw exception illegal value for @#info.hallign
+      2 = 3; % throw exception illegal value for @#info.halign
     fi;
 
     if @#info.valign = "bottom":
@@ -220,7 +225,7 @@ vardef Picture_layout@# =
     elseif @#info.valign = "center":
       ydelta__ := (@#height-pictHeight(@#pict))/2 - @#negativeBase + negativeBaseAdjustement__;
     else:
-      2 = 3; % throw exception illegal value for @#info.vallign
+      2 = 3; % throw exception illegal value for @#info.valign
     fi;
 
     @#contentShift = @#sw + (xdelta__, ydelta__);
@@ -235,6 +240,15 @@ vardef Picture_draw@# =
   objectEnsurePositioning.@#;
   
   draw @#pict shifted @#contentShift;
+
+  if (@#info.textDecoration = "underline"):
+    save ydelta, height;
+    height := pictHeight(@#pict) - @#negativeBase;
+
+    ydelta := @#info.bottom - @#negativeBase - 0.8;
+
+    draw @#sw + (@#info.left, ydelta) -- @#se + (-@#info.right, ydelta) withcolor black withpen pencircle scaled 0.2bp;
+  fi;
 
   if (@#info.boxed = 1):
     draw objectBox(@#) withcolor @#info.borderColor;

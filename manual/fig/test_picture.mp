@@ -88,8 +88,6 @@ beginfig(3);
   A0.nw=(50,0);
   drawboxed(A0,A1,A2,A3,A4);
 
-  show A[1].nw;
-
   myy := 10;
 
   bboxmargin := 0;
@@ -101,9 +99,6 @@ beginfig(3);
   x := "f: int" infont theFont;
   draw bbox(x) shifted p;
   draw x shifted p;
-
-  show "LLCORNER P";
-  show llcorner x;
 
   pair q;
   q := (70,myy);
@@ -120,9 +115,6 @@ beginfig(3);
   y := "goot" infont theFont;
   draw bbox(y) shifted qq;
   draw y shifted qq;
-
-  show "LLCORNER q";
-  show llcorner y;
 
   draw (0,myy)--(150, myy) dashed evenly;
 
@@ -260,6 +252,22 @@ beginfig(10);
   leftToRight.bottom(20)(a, b, c, d, e);
 
   drawObjects(a, b, c, d, e);
+endfig;
+
+beginfig(11);
+  save a, b, c;
+  Picture.a("goo");
+  a.info.textDecoration := "underline";
+
+  Picture.b("foo()");
+  b.info.textDecoration := "underline";
+
+  Picture.c("x");
+  c.info.textDecoration := "underline";
+
+  topToBottom(5)(a, b, c);
+
+  drawObjects(a, b, c);
 endfig;
 
 end

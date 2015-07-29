@@ -31,15 +31,25 @@ visibilityProtected:="#";
 visibilityPrivate:="-";
 visibilityPackage:="~";
 
+string metauml_private_abstractMarker, metauml_private_staticMarker;
+metauml_private_abstractMarker := "@abstract";
+metauml_private_staticMarker := "@static";
+
+def abstract expr methodName= metauml_private_abstractMarker&methodName enddef;
+def static expr featureName= metauml_private_staticMarker&featureName enddef;
+
+def metauml_private_isAbstract(expr name) = (substring (0, 9) of name = metauml_private_abstractMarker) enddef;
+def metauml_private_isStatic(expr name) = (substring (0, 7) of name = metauml_private_staticMarker) enddef;
+def metauml_private_stripStatic(expr name) = substring (7,infinity) of name enddef;
+def metauml_private_stripAbstract(expr name) = substring (9,infinity) of name enddef;
+
 vardef ClassInfo@#=
   attributes(@#);
   var(color)   foreColor, borderColor;
   var(string)  featureVisibilityMode;
 
   FontInfo.@#nameFont(metauml_defaultFont, defaultscale);
-
-  FontInfo.@#attributeFont (metauml_defaultFont, defaultscale);
-  FontInfo.@#methodFont    (metauml_defaultFont, defaultscale);
+  FontInfo.@#featureFont (metauml_defaultFont, defaultscale);
   FontInfo.@#stereotypeFont(metauml_defaultFont, .7);
 
   ShadeInfo.@#iShade;
@@ -50,26 +60,31 @@ vardef ClassInfo@#=
   @#borderColor := black;
 
   PictureInfo.@#iName      (2, 2, 1, 3)(@#nameFont);
+  @#iName.ignoreNegativeBase := 1;
 
   PictureInfo.@#iStereotype(2, 2, 2, 2)(@#stereotypeFont);
-  PictureInfo.@#iAttribute (2, 2, 1.25, 0)(@#attributeFont);
-  PictureInfo.@#iMethod    (2, 2, 1.25, 0)(@#methodFont);
-
-  PictureStackInfo.@#iStereotypeStack(2, 2, 1, 1)(5.5)(@#iStereotype);
-  PictureStackInfo.@#iAttributeStack (2, 2, 2.5, 2)(10.5)(@#iAttribute);
-  PictureStackInfo.@#iMethodStack    (2, 2, 2.5, 2)(10.5)(@#iMethod);
-    
-  @#iAttributeStack.iPict.bottom := 2;
-  @#iMethodStack.iPict.bottom := 2;
-
-  @#iName.ignoreNegativeBase := 1;
-  @#iAttributeStack.iPict.ignoreNegativeBase := 1;
-  @#iMethodStack.iPict.ignoreNegativeBase := 1;
   @#iStereotypeStack.iPict.ignoreNegativeBase := 1;
 
-  PictureStackInfoCopy.@#iAttributeVisibilityStack (@#iAttributeStack);
-  PictureStackInfoCopy.@#iMethodVisibilityStack (@#iMethodStack);
-  
+  PictureStackInfo.@#iStereotypeStack(2, 2, 1, 1)(5.5)(@#iStereotype);
+
+  PictureInfo.@#iFeature         (2, 2, 1.25, 0)(@#featureFont);
+
+  PictureInfoCopy.@#iFeatureAbstract (@#iFeature);
+  @#iFeatureAbstract.iFont.name := metauml_defaultFontOblique;
+
+  PictureInfoCopy.@#iFeatureStatic (@#iFeature);
+  @#iFeatureStatic.textDecoration := "underline";
+
+  PictureStackInfo.@#iFeatureStack   (2, 2, 2.5, 2)(10.5)(@#iFeature);
+  PictureStackInfoCopy.@#iAttributeStack(@#iFeatureStack);
+  PictureStackInfoCopy.@#iMethodStack(@#iFeatureStack);
+
+  @#iFeatureStack.iPict.bottom := 2;
+  @#iFeatureStack.iPict.ignoreNegativeBase := 1;
+
+  PictureStackInfoCopy.@#iAttributeVisibilityStack (@#iFeatureStack);
+  PictureStackInfoCopy.@#iMethodVisibilityStack (@#iFeatureStack);
+
   @#iAttributeVisibilityStack.right := 0;
   @#iMethodVisibilityStack.right := 0;
 enddef;
@@ -83,9 +98,7 @@ vardef ClassInfoCopy@#(text src)=
   var(string)  featureVisibilityMode;
 
   FontInfoCopy.@#nameFont(src.nameFont);
-
-  FontInfoCopy.@#attributeFont(src.attributeFont);
-  FontInfoCopy.@#methodFont(src.methodFont);
+  FontInfoCopy.@#featureFont(src.featureFont);
   FontInfoCopy.@#stereotypeFont(src.stereotypeFont);
 
   ShadeInfoCopy.@#iShade(src.iShade);
@@ -96,10 +109,12 @@ vardef ClassInfoCopy@#(text src)=
   PictureInfoCopy.@#iName      (src.iName);
 
   PictureInfoCopy.@#iStereotype(src.iStereotype);
-  PictureInfoCopy.@#iAttribute (src.iAttribute);
-  PictureInfoCopy.@#iMethod    (src.iMethod);
+  PictureInfoCopy.@#iFeature (src.iFeature);
+  PictureInfoCopy.@#iFeatureAbstract (src.iFeatureAbstract);
+  PictureInfoCopy.@#iFeatureStatic   (src.iFeatureStatic);
 
   PictureStackInfoCopy.@#iStereotypeStack(src.iStereotypeStack);
+  PictureStackInfoCopy.@#iFeatureStack   (src.iFeatureStack);
   PictureStackInfoCopy.@#iAttributeStack (src.iAttributeStack);
   PictureStackInfoCopy.@#iMethodStack    (src.iMethodStack);
   PictureStackInfoCopy.@#iAttributeVisibilityStack (src.iAttributeVisibilityStack);
@@ -141,12 +156,16 @@ vardef defClass@#(expr pname) =
 
   string @#attributes[];
   string @#attributesVisibility[];
+  boolean @#attributesIsStatic[];
 
   string @#methods[];
   string @#methodsVisibility[];
+  boolean @#methodsIsStatic[];
+  boolean @#methodsIsAbstract[];
 
   numeric @#nAttrs;
   numeric @#nMethods;
+  numeric @#nStereotypes;
 
   @#nStereotypes := 0;
   @#nAttrs   := 0;
@@ -155,20 +174,29 @@ enddef;
 
 vardef addAttribute@#(expr pcontent) =
   string visibility;
-  visibility := substring(0,1) of pcontent;
+  string attribute;
+
+  attribute := pcontent;
+
+  @#attributesIsStatic[@#nAttrs] := metauml_private_isStatic(attribute);
+  if @#attributesIsStatic[@#nAttrs]:
+    attribute := metauml_private_stripStatic(attribute);
+  fi
+
+  visibility := substring(0,1) of attribute;
   if (not (visibility = visibilityPublic))  and
      (not (visibility = visibilityPrivate)) and
      (not (visibility = visibilityProtected)) and
      (not (visibility = visibilityPackage)):
 
-    @#.attributes[@#.nAttrs] := pcontent;
+    @#.attributes[@#.nAttrs] := attribute;
     @#.attributesVisibility[@#.nAttrs] := visibilityPackage;
   else:
     save from;
     from := 1;
-    if (substring(1,2) of pcontent) = " ": from := 2; fi;
+    if (substring(1,2) of attribute) = " ": from := 2; fi;
 
-    @#.attributes[@#.nAttrs] := substring(from, infinity) of pcontent;
+    @#.attributes[@#.nAttrs] := substring(from, infinity) of attribute;
     @#.attributesVisibility[@#.nAttrs] := visibility;
   fi;
 
@@ -177,20 +205,34 @@ enddef;
 
 vardef addMethod@#(expr pcontent) =
   string visibility;
-  visibility := substring(0,1) of pcontent;
+  string method;
+
+  method := pcontent;
+
+  @#methodsIsStatic[@#nMethods] := metauml_private_isStatic(method);
+  if @#methodsIsStatic[@#nMethods]:
+    method := metauml_private_stripStatic(method);
+  fi
+
+  @#methodsIsAbstract[@#nMethods] := metauml_private_isAbstract(method);
+  if @#methodsIsAbstract[@#nMethods]:
+    method := metauml_private_stripAbstract(method);
+  fi
+
+  visibility := substring(0,1) of method;
   if (not (visibility = visibilityPublic))  and
      (not (visibility = visibilityPrivate)) and
      (not (visibility = visibilityProtected)) and
      (not (visibility = visibilityPackage)):
 
-    @#.methods[@#.nMethods] := pcontent;
+    @#.methods[@#.nMethods] := method;
     @#.methodsVisibility[@#.nMethods] := visibilityPackage;
   else:
     save from;
     from := 1;
-    if (substring(1,2) of pcontent) = " ": from := 2; fi;
+    if (substring(1,2) of method) = " ": from := 2; fi;
 
-    @#.methods[@#.nMethods] := substring(from, infinity) of pcontent;
+    @#.methods[@#.nMethods] := substring(from, infinity) of method;
     @#.methodsVisibility[@#.nMethods] := visibility;
   fi;
 
@@ -198,11 +240,12 @@ vardef addMethod@#(expr pcontent) =
 enddef;
 
 vardef classStereotype@#(expr pcontent) =
-  @#stereotypes[@#nStereotypes] := pcontent;
-  @#nStereotypes := @#nStereotypes + 1;
+    show "Macro classStereotype is deprecated, use Class_stereotypes instead.";
+    Class_stereotypes.@#(pcontent);
 enddef;
 
 vardef classStereotypes@#(text stereotypes)=
+  show "Macro classStereotypes is deprecated, use Class_stereotypes instead.";
   Class_stereotypes.@#(stereotypes);
 enddef;
 
@@ -275,6 +318,14 @@ vardef Class_layout@# =
 
     % Define attributes
 
+    def metauml_private_attributeStyleSupplier(expr i)= 
+        if @#attributesIsStatic[i]: @#info.iFeatureStatic
+        else: @#info.iFeature
+        fi
+    enddef;
+
+    @#info.iAttributeStack.childStyleSupplier := "metauml_private_attributeStyleSupplier";
+
     EPictureStack.@#attributeStack(@#info.iAttributeStack)
        (scantokens listArray(@#attributes)(@#nAttrs))("vleftbase");
 
@@ -295,6 +346,15 @@ vardef Class_layout@# =
     fi;
 
     % Define methods
+
+    def metauml_private_methodStyleSupplier(expr i)= 
+        if @#methodsIsStatic[i]: @#info.iFeatureStatic
+        elseif @#methodsIsAbstract[i]: @#info.iFeatureAbstract
+        else: @#info.iFeature
+        fi 
+    enddef;
+
+    @#info.iMethodStack.childStyleSupplier := "metauml_private_methodStyleSupplier";
 
     EPictureStack.@#methodStack(@#info.iMethodStack)
        (scantokens listArray(@#methods)(@#nMethods))("vleftbase");
@@ -371,16 +431,22 @@ vardef Class_paintSkin@# =
 enddef;
 
 vardef Class_draw@#=
-  log "draw class begin...";
+  log "Class_draw begin " & @#;
   Class_layout.@#;
   objectEnsurePositioning.@#;
   Class_paintSkin.@#;
 
   drawObjects(@#all);
+  log "Class_draw end " & @#;
 enddef;
 
 vardef Class_setDebugMode@#=
   @#.info.iName.boxed := 1;
+  
+  @#.info.iFeature.boxed := 1;
+  @#.info.iFeatureStatic.boxed := 1;
+  @#.info.iFeatureAbstract.boxed := 1;
+  
   @#.info.iStereotypeStack.boxed := 1;
   @#.info.iStereotypeStack.iPict.boxed := 1;
   @#.info.iAttributeStack.boxed := 1;
@@ -394,8 +460,9 @@ vardef Class_setDebugMode@#=
   @#.info.iMethodVisibilityStack.iPict.boxed := 1;
 enddef;
 
-vardef Class_stereotypes@#(text stereotypes)=
-  for stereotype = stereotypes:
-    classStereotype@#(stereotype);
+vardef Class_stereotypes@#(text _stereotypes)=
+  for stereotype = _stereotypes:
+      @#stereotypes[@#nStereotypes] := stereotype;
+      @#nStereotypes := @#nStereotypes + 1;
   endfor;
 enddef;

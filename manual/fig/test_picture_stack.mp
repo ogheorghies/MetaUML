@@ -118,9 +118,9 @@ beginfig(7);
 
     PictureStackInfoCopy.stylePictureStack(iStack);
 
-    def styleSelector(expr i)= if i mod 2 = 0: stylePA else: stylePB fi enddef;
+    def styleSupplier(expr i)= if i mod 2 = 0: stylePA else: stylePB fi enddef;
 
-    stylePictureStack.itemStyleCallback := "styleSelector";
+    stylePictureStack.childStyleSupplier := "styleSupplier";
 
     EPictureStack.stackX(stylePictureStack)("a","b","c","d","e")("vcenter");
 
