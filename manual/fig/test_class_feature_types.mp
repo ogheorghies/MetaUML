@@ -31,4 +31,23 @@ beginfig(3);
     drawObjects(A);
 endfig;
 
+beginfig(4);
+    save A;
+    Class.A("A")
+        (static "-instanceCount:int")
+        (static "+getInstanceCount():int", abstract "+work()");
+    drawObjects(A);
+endfig;
+
+beginfig(5);
+    save A, B;
+    Class.A("A")()();
+    Class.B(abstract "B")()();
+    Class.C("C")()(abstract "foo()");
+    
+    leftToRight(5)(A, B, C);
+
+    drawObjects(A, B, C);
+endfig;
+
 end

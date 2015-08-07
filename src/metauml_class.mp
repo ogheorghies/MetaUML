@@ -62,6 +62,9 @@ vardef ClassInfo@#=
   PictureInfo.@#iName      (2, 2, 1, 3)(@#nameFont);
   @#iName.ignoreNegativeBase := 1;
 
+  PictureInfoCopy.@#iNameAbstract(@#iName);
+  @#iNameAbstract.iFont.name := metauml_defaultFontOblique;
+
   PictureInfo.@#iStereotype(2, 2, 2, 2)(@#stereotypeFont);
   @#iStereotypeStack.iPict.ignoreNegativeBase := 1;
 
@@ -106,7 +109,8 @@ vardef ClassInfoCopy@#(text src)=
   @#foreColor := src.foreColor;
   @#borderColor := src.borderColor;
 
-  PictureInfoCopy.@#iName      (src.iName);
+  PictureInfoCopy.@#iName         (src.iName);
+  PictureInfoCopy.@#iNameAbstract (src.iNameAbstract);
 
   PictureInfoCopy.@#iStereotype(src.iStereotype);
   PictureInfoCopy.@#iFeature (src.iFeature);
@@ -149,7 +153,14 @@ vardef defClass@#(expr pname) =
   @#className := "Class";
 
   string @#name;
-  @#name = pname;
+  boolean @#isAbstract;
+
+  @#isAbstract := metauml_private_isAbstract(pname);
+  if @#isAbstract:
+    @#name = metauml_private_stripAbstract(pname);
+  else:
+    @#name = pname;
+  fi
 
   numeric @#nStereotypes;
   string @#stereotypes[];
@@ -217,6 +228,7 @@ vardef addMethod@#(expr pcontent) =
   @#methodsIsAbstract[@#nMethods] := metauml_private_isAbstract(method);
   if @#methodsIsAbstract[@#nMethods]:
     method := metauml_private_stripAbstract(method);
+    @#isAbstract := true;
   fi
 
   visibility := substring(0,1) of method;
@@ -251,6 +263,7 @@ enddef;
 
 vardef EClass@#(text _info)(expr name)(text attributes)(text methods)=
   log "EClass begin: " & str @#;
+
   defClass@#(name);
 
   log "Copying class info";
@@ -312,8 +325,12 @@ vardef Class_layout@# =
     EPictureStack.@#stereotypeStack(@#info.iStereotypeStack)
        (scantokens listArray(@#stereotypes)(@#nStereotypes))("vcenterbase");
 
-    EPicture.@#namePict(@#info.iName)(@#name);
-    
+    if (@#isAbstract):
+        EPicture.@#namePict(@#info.iNameAbstract)(@#name);
+    else:
+        EPicture.@#namePict(@#info.iName)(@#name);
+    fi;
+
     layoutObjects(@#stereotypeStack, @#namePict);
 
     % Define attributes
