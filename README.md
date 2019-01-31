@@ -14,6 +14,13 @@ end
 mptopdf example.mp
 ```
 
-You can [try MetaUML online](https://metauml.denksoft.com/) by loading one of the available examples.
-
 For more information, see the [wiki](https://github.com/ogheorghies/MetaUML/wiki) and the [manual](https://github.com/ogheorghies/MetaUML/releases/download/v0.2.5/metauml_manual_0.2.5.pdf).
+
+# Development
+
+```
+apt install texlive-metapost
+git clone git@github.com:ogheorghies/MetaUML.git
+sudo mv /usr/share/texlive/texmf-dist/metapost/metauml /tmp/metauml-old
+sudo ln -svf ${PWD}/MetaUML/src /usr/share/texlive/texmf-dist/metapost/metauml
+```
