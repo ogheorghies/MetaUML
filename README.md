@@ -19,7 +19,7 @@ For more information, see the [wiki](https://github.com/ogheorghies/MetaUML/wiki
 # Development
 
 ```
-apt install texlive-metapost
+sudo apt install texlive-metapost
 git clone git@github.com:ogheorghies/MetaUML.git
 sudo mv /usr/share/texlive/texmf-dist/metapost/metauml /tmp/metauml-old
 sudo ln -svf ${PWD}/MetaUML/src /usr/share/texlive/texmf-dist/metapost/metauml
