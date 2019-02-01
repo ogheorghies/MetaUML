@@ -1,8 +1,8 @@
 steps:
-- name: 'gcr.io/github-build-1/ogheorghies-debian-cxx-cmake-make'
-  args: ['bash', '-c', 'touch demo-ci-2']
+- name: 'blang/latex:ctanfull'
+  args: ['bash', '-c', 'make release']
 
 artifacts:
   objects:
-    location: 'gs://demo-ci-1'
-    paths: ['demo-ci-2']
+    location: 'gs://metauml'
+    paths: ['metauml.tgz']
