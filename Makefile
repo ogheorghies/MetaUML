@@ -5,7 +5,7 @@
 
 _UID=$(shell id -u)
 TAG_NAME := $(or $(TAG_NAME),$(shell git describe --tags | rev | cut -f3- -d- | rev ))
-TAG_NAME := $(TAG_NAME:v%=%)
+TAG_NAME_NO_V := $(TAG_NAME:v%=%)
 REVISION_ID := $(or $(REVISION_ID),$(shell git describe --tags | rev | cut -f-2 -d- | rev))
 METAUML_RELEASE_DATE := $(shell date "+%B %d, %Y")
 
@@ -16,7 +16,7 @@ release:
 	mkdir dist/build/doc
 	mkdir dist/build/examples
 	mkdir dist/build/inputs
-	sed -e 's/METAUML_RELEASE_VERSION/$(TAG_NAME)/' -e 's/METAUML_RELEASE_DATE/$(METAUML_RELEASE_DATE)/' ctan/README >dist/build/README
+	sed -e 's/METAUML_RELEASE_VERSION/$(TAG_NAME_NO_V)/' -e 's/METAUML_RELEASE_DATE/$(METAUML_RELEASE_DATE)/' ctan/README >dist/build/README
 	cp manual/metauml-manual.pdf dist/build/doc/metauml-manual-$(TAG_NAME)-$(REVISION_ID).pdf
 	cp src/*.mp dist/build/inputs
 	cp -r manual dist/build/examples/
