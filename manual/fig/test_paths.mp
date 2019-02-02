@@ -55,7 +55,7 @@ beginfig(3);
   Picture.A("Alpha");
   Picture.B("Beta");
   Picture.C("Gamma");
-  Picture.D("Detla");
+  Picture.D("Delta");
   Picture.O("Omega");
   
   A.c = O.c + (-50,50);
@@ -81,7 +81,7 @@ beginfig(3);
   Picture.A("Alpha");
   Picture.B("Beta");
   Picture.C("Gamma");
-  Picture.D("Detla");
+  Picture.D("Delta");
   Picture.O("Omega");
   
   A.c = O.c + (-50,50);

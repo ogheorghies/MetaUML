@@ -1,8 +1,8 @@
 steps:
 - name: 'blang/latex:ctanfull'
-  args: ['bash', '-c', 'make release']
+  args: ['bash', '-c', 'rm -rf /usr/local/texlive/2017/texmf-dist/metapost/metauml; ln -svf ${PWD}/src /usr/local/texlive/2017/texmf-dist/metapost/metauml; make release-tgz']
 
 artifacts:
   objects:
     location: 'gs://metauml'
-    paths: ['metauml.tgz']
+    paths: ['metauml-$TAG_NAME-$REVISION_ID.tgz']

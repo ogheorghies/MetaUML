@@ -5,11 +5,10 @@ all: pdf
 
 pdf:
 	make -C fig
-	latexmk -pdf metauml-manual.tex
+	latexmk -halt-on-error -bibtex -pdf metauml-manual.tex
 
 clean:
 	make -C fig clean
 	latexmk -C
 
 .PHONY: pdf all clean
-

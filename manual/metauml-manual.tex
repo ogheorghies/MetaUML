@@ -1,6 +1,6 @@
 %    MetaUML: Tutorial, Reference and Test Suite
 %
-%    Copyright (c) 2005-2006 Ovidiu Gheorghies
+%    Copyright (c) 2005-2019 Ovidiu Gheorghies
 %    Permission is granted to copy, distribute and/or modify this document
 %    under the terms of the GNU Free Documentation License, Version 1.2
 %    or any later version published by the Free Software Foundation;
@@ -10,9 +10,12 @@
 
 \documentclass{article}
 
+\usepackage[utf8]{inputenc}
 \usepackage[pdftex,colorlinks=true]{hyperref}
 \usepackage{multicol}
 \usepackage{multido}
+\usepackage[style=ieee]{biblatex}
+\addbibresource{metauml-manual.bib}
 
 \ifx\pdftexversion\undefined
   \usepackage[dvips]{graphicx}
@@ -27,10 +30,10 @@
 
 \begin{document}
 
-MetaUML: Tutorial, Reference and Test Suite
+MetaUML: A Manual and Test Suite
 
 \begin{quote}
-    Copyright \copyright 2005 2015 Ovidiu Gheorghie\c{s}.
+    Copyright \copyright 2005-2019 Ovidiu Gheorghie\c{s}.
     Permission is granted to copy, distribute and/or modify this document
     under the terms of the GNU Free Documentation License, Version 1.2
     or any later version published by the Free Software Foundation;
@@ -48,9 +51,10 @@ This page is intentionally left blank.
 \maketitle
 
 \begin{abstract}
-MetaUML is a MetaPost library for creating UML diagrams, using a textual notation.
-This manual describes the use and some of the inner workings of MetaUML, but, more importantly, is a living example.
-Since the source code of the manual is freely available, you can get direct insights into ``how things are done''.
+MetaUML is a MetaPost \cite {metapost} library for creating UML \cite{umlomg} diagrams by means of a textual notation.
+While presenting the inner workings of MetaUML, this manual doubles as a step-by-step tutorial.
+More importantly, its source code contains many useful examples of diagrams, ranging from the very basic to the
+more advanced and customized.
 \end{abstract}
 
 \section{Introduction}
@@ -76,7 +80,7 @@ Here is a quick MetaUML showcase:
 \pagebreak
 
 The code that generates these diagrams is quite straightforward, combining a natural object-oriented parlance
-with the power of MetaPost \cite {metapost} equation solving.
+with the power of MetaPost equation solving.
 
 For example, a UML class is drawn as follows:
 
@@ -94,7 +98,7 @@ drawObject(A);
 \hspace{1cm}\includegraphics{fig/appetizer.7}
 \end{multicols}
 
-This code creates an object, referenced by its name {\code A}, of the MetaUML-defined type {\code Class}. 
+This code creates a visual object, referenced by its name {\code A}, of the MetaUML-defined type {\code Class}. 
 Object {\code A} has the following content properties: a name
 ({\code MyClass}), a list of attributes ({\code attr1}, {\code attr2})
 and a list of methods ({\code method1}, {\code method2}). To set the object's location, we assign a value to the 
@@ -141,7 +145,7 @@ For example, the following call draws an inheritance relation from class {\code 
 link(inheritance)(B.e -- A.w);
 \end{verbatim}
 
-Note that the direction of the path is important, as MetaUML uses it to determine the
+The direction of the path is important, as MetaUML uses it to determine the
 type of adornment to attach to the link ends (if applicable). In our example, a white triangle,
 denoting inheritance, points towards the end of the path, that is towards class {\code A}.
 
@@ -231,7 +235,7 @@ Class_stereotypes.<name>(<list-of-stereotypes>);
 \end{verbatim}
 
 Here, {\code <name>} is the object name of a previously created class and {\code <list-of-stereotypes>}
-is a comma separated list of strings. Here is an example:
+is a comma-separated list of strings. Here is an example:
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -267,7 +271,7 @@ drawObject(A);
 \hspace{1cm}\includegraphics{fig/class.11}
 \end{multicols}
 
-Note that {\code Interface} is a special kind of {\code Class}, the declaration code above being equivalent to:
+Since internally {\code Interface} treated as a special kind of {\code Class}, the code above is equivalent to:
 \begin{verbatim}
 EClass.A(iInterface)("Observer")()
       ("+update(src:Object)");
@@ -347,7 +351,7 @@ Instance.name(object-name)
   (list-of-attributes);
 \end{verbatim}
 
-The suffix {\code name} gives a name to the {\code Instance} object. The name of the object (given by {\code object-name}) is typeset underlined. The attributes are given as a comma separated list of strings, {\code list-of-attributes}.
+The suffix {\code name} gives a name to the {\code Instance} object. The name of the object (given by {\code object-name}) is typeset underlined. The attributes are given as a comma-separated list of strings, {\code list-of-attributes}.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -370,7 +374,7 @@ ClassTemplate.name(list-of-templates)
                   (class-object);
 \end{verbatim}
 
-The {\code name} is the name of the template object, {\code list-of-templates} is a comma separated list of strings and the {\code class-object} is the name of a class object.
+The {\code name} is the name of the template object, {\code list-of-templates} is a comma-separated list of strings and the {\code class-object} is the name of a class object.
 
 Here is an example:
 
@@ -392,7 +396,7 @@ object can be positioned freely.
 Template.name(list-of-templates);
 \end{verbatim}
 
-Of course, one can specify both stereotypes and template parameters for a given class.
+Of course, it is possible to specify both stereotypes and template parameters for a given class.
 
 \subsection{Types of Links}
 
@@ -436,7 +440,7 @@ These entities are treated in MetaUML as pictures having specific drawing inform
 
 The first method of creating association ``items'' is by giving them explicit names.
 Having a name for an association item comes in handy when referring to its properties
-is later needed (see the non UML-compliant diagram below). Note that the last parameter of the macro {\code item} is an equation which uses the item name to perform positioning.
+is later needed (see the non UML-compliant diagram below). The last parameter of the macro {\code item} is an equation which may use the item's name to perform positioning.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -563,7 +567,8 @@ Macros like {\code leftToRight} and {\code topToBottom} are presented in section
 
 \subsection{Using mathematical formulae}
 
-MetaUML notes can contain mathematical formulae typeset in TeX (and {\bf not} LaTeX). This feature is considered experimental, as it is not always straightforward to use it. Below is a full-code example, note the import of MetaPost package {\code TEX}.
+MetaUML notes can contain mathematical formulae written in TeX \cite{texbook}. Regretably, LaTeX \cite{latexbook} support for formulae is {\bf not} available.
+Limited as it may be, this feature is considered experimental, as it is not always straightforward to use. In the example below, note that the MetaPost package {\code TEX} is imported.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -582,7 +587,8 @@ end
 \hspace{0.5cm}\includegraphics{fig/note.4}
 \end{multicols}
 
-If you have a taller formula, you must be prepared to do some advanced stunts. Remark: {\code "aaa" \& "bbb"} is MetaPost's way to concatenate the strings into {\code "aaabbb"}. The formula's string was split in two for space reasons.
+For taller formulae, you must be prepared to do some advanced stunts. Remark: {\code "aaa" \& "bbb"} is MetaPost's way to concatenate the strings into {\code "aaabbb"};
+the string containing the formula was split in two for layout reasons.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -598,11 +604,16 @@ drawObject(A);
 \hspace{3cm}\includegraphics{fig/note.5}
 \end{multicols}
 
-Alas, this trick does not entirely solve the problem: a third line in the note would be badly aligned. Therefore, until MetaUML's {\code Note} class is upgraded to better support this scenario, you may want to limit yourself to two lines per note --- at least when tall formulae are involved.
+Alas, this trick does not entirely solve the problem: a third line in the note would be badly aligned. Therefore,
+until MetaUML's {\code Note} class is upgraded to better support this scenario, you may want to limit yourself 
+to two lines per note --- at least when tall formulae are involved.
 
 \section{Packages}
 
-MetaUML allows for the creation of packages in various forms. Firstly, we have the option of writing the package name in the middle of the main box. Secondly, we can write the name on the tiny box above the main box, leaving the main box empty. Lastly, we can write the package name as in the second case, but the main box can have an arbitrary contents: classes, other packages, or even other UML items. 
+MetaUML allows for the creation of packages in various forms. Firstly, we have the option of writing the package 
+name in the middle of the main box. Secondly, we can write the name on the tiny box above the main box, leaving 
+the main box empty. Lastly, we can write the package name as in the second case, but the main box can have an arbitrary
+contents: classes, other packages, or even other UML items. 
 
 The macro that creates a package has the following synopsis:
 
@@ -610,7 +621,9 @@ The macro that creates a package has the following synopsis:
 Package.name(package-name)(subitems-list);
 \end{verbatim}
 
-The parameter {\code package-name} is a string or a list of comma separated strings representing the package's name. The {\code subitems-list} parameter is used to specify the subitems (tipically classes or packages) of this package; its form is as a comma separated list of objects, which can be void.
+The parameter {\code package-name} is a string or a list of comma-separated strings representing the package's name.
+The {\code subitems-list} parameter is used to specify the subitems (tipically classes or packages) of this package;
+its form is as a comma-separated list of objects, which can be void.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -650,7 +663,8 @@ The same effect as above can be achieved globally by doing:
 iPackage.forceEmptyContent := 1;
 \end{verbatim}
 
-More information on MetaUML's way of managing global and per-object configuration data can be found in section \ref{section:infrastructure} and section \ref{section:customization}.
+More information on MetaUML's way of managing global and per-object configuration data can be found in
+section \ref{section:infrastructure} and section \ref{section:customization}.
 
 Here is an example involving items contained in a package.
 
@@ -687,7 +701,9 @@ Component.name(component-name)
   (subitems-list)
 \end{verbatim}
 
-The parameter {\code component-name} is a string representing the component's name. The {\code subitems-list} parameter is used to specify the subitems of this component (possibly classes, packages or other components); its form is as a comma separated list of objects, which can be void.
+The parameter {\code component-name} is a string representing the component's name. The {\code subitems-list} parameter
+is used to specify the subitems of this component (possibly classes, packages or other components); its form is as a 
+comma-separated list of objects, which can be void.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -757,7 +773,7 @@ An use case is created by the macro {\code Usecase}:
 Usecase.name(list-of-lines);
 \end{verbatim}
 
-The {\code list-of-lines} is a comma separated list of strings. These strings are placed
+The {\code list-of-lines} is a comma-separated list of strings. These strings are placed
 on top of each other, centered and surrounded by the appropriate visual UML notation.
 
 Here is an use case example:
@@ -796,7 +812,7 @@ drawObject(A);
 \hspace{1cm}\includegraphics{fig/usecase.2}
 \end{multicols}
 
-Note that one may prefer to draw diagram relations positioned relatively to
+Sometimes it may be preferable to draw diagram relations positioned relatively to
 the visual representation of an actor (the ``human'') rather than relatively to the whole
 actor object (which also includes the text). Because of that, MetaUML provides access
 to the ``human'' of every actor object {\code actor} by means of the sub-object {\code actor.human}.
@@ -812,7 +828,7 @@ draw objectBox(A.human);
 \hspace{1cm}\includegraphics{fig/usecase.3}
 \end{multicols}
 
-Note that in MetaUML {\code objectBox(X)} is equivalent to {\code X.nw -- X.ne -- X.se -- X.sw -- cycle} for every object {\code X}. {\code A.human} is considered a MetaUML object, so you can use expressions like {\code A.human.n} or {\code A.human.midx}.
+In MetaUML, {\code objectBox(X)} is equivalent to {\code X.nw -- X.ne -- X.se -- X.sw -- cycle} for every object {\code X}. {\code A.human} is considered a MetaUML object, so you can use expressions like {\code A.human.n} or {\code A.human.midx}.
 
 \subsection{Types of Links}
 
@@ -853,7 +869,7 @@ An activity is constructed as follows:
 Activity.name(list-of-strings);
 \end{verbatim}
 
-The parameter {\code list-of-strings} is a comma separated list of strings. These strings are
+The parameter {\code list-of-strings} is a comma-separated list of strings. These strings are
 centered on top of each other to allow for the accommodation of a longer activity description
 within a reasonable space.
 
@@ -877,7 +893,9 @@ A fork or join is created by the macro:
 Fork.name(type, length);
 \end{verbatim}
 
-The parameter {\code type} is a string and can be either of {\code "h"}, {\code "horiz"}, {\code "horizontal"} for horizontal bars, and either of {\code "v"}, {\code "vert"}, {\code "vertical"} for vertical bars. The {\code length} gives the bar's length.
+The parameter {\code type} is a string and can be either of {\code "h"}, {\code "horiz"}, {\code "horizontal"}
+for horizontal bars, and either of {\code "v"}, {\code "vert"}, {\code "vertical"} for vertical bars.
+The {\code length} gives the bar's length.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -931,9 +949,9 @@ The constructor of a state allows for aggregated sub-states:
 State.name(state-name)(substates-list);
 \end{verbatim}
 
-The parameter {\code state-name} is a string or a list of comma separated strings representing
+The parameter {\code state-name} is a string or a list of comma-separated strings representing
 the state's name or description. The {\code substates-list} parameter is used to specify
-the substates of this state as a comma separated list of objects; this list may be void.
+the substates of this state as a comma-separated list of objects; this list may be void.
 
 An example of a simple state:
 
@@ -984,7 +1002,7 @@ stateTransitions.name(list-transitions);
 \end{verbatim}
 
 Identifier {\code name} gives the state object whose internal transitions are being set,
-and parameter {\code list-transitions} is a comma separated string list.
+and parameter {\code list-transitions} is a comma-separated string list.
 
 
 An example is given below:
@@ -1035,11 +1053,9 @@ link(aggregationUni)
 \hspace{1cm}\includegraphics{fig/paths.1}
 \end{multicols}
 
-Regardless of how amusing this feature might be, it does become a bit of a nuisance to
-use it in its bare form. When typesetting UML diagrams in good style, one generally
-uses rectangular paths. It is for this kind of style that MetaUML offers extensive
-support, providing a ``syntactic sugar'' for constructs which can otherwise be
-done by hand, but with some extra effort.
+Amusing as it may be, this feature gets old soon. When typesetting UML diagrams in good style, rectangular paths are usually preferred. 
+It is for this kind of paths that MetaUML offers extensive support, by means of ``syntactic sugar'' constructs which
+are not only self-documenting, but reduce the amount of typing and thinking required.
 
 \subsection{Manhattan Paths}
 
@@ -1153,16 +1169,15 @@ is equivalent to {\code A -{}-  B}.
 
 \subsection{Paths between Objects}
 
-Using the constructs presented above, it is clear that one can draw links between diagram
-objects, using a code like:
+Using the constructs presented above, links between diagram objects are drawn easily like this:
 
 \begin{verbatim}
 link(transition)(directPath(objA.nw, objB.se));
 \end{verbatim}
 
-There are times however this may yield unsatisfactory visual results,
-especially when the appearance of the object's corners is round. MetaUML provides the macro
-{\code pathCut} whose aim is to limit a given path exactly to the region outside the actual
+There are times however when this direct approach may yield unsatisfactory visual results,
+especially when the object's corners is round. To tackle these situations, MetaUML provides the macro
+{\code pathCut}, whose aim is to limit a given path exactly to the region outside the actual
 borders of the objects it connects. The macro's synopsis is:
 
 \begin{verbatim}
@@ -1221,7 +1236,7 @@ the positioning code.
 
 Suppose that we have three classes, {\code A}, {\code B}, {\code C} and their base class
 {\code Base}. We want the base class to be at the top, and the derived classes to be
-on a line below. A code like the following will do:
+on a line below. This code will do:
 
 \begin{verbatim}
 A.ne = B.nw + (20,0);
@@ -1229,9 +1244,12 @@ B.ne = C.nw + (20,0);
 Base.s = B.n + (0,-20);
 \end{verbatim}
 
-Now, look at the code again. What strikes you is that you cannot visualize what it is all about, unless you really try --- decoding the intent line by line. What this code lacks is a feature called self-documenting: the code is good only if you can read it as a story and understand its meaning.
+Unfortunately, writing code such as this makes it hard for fellow programmers to visualize
+its intent upon reading it. And ``fellow programmers`` include the author, five minutes later.
 
-Perhaps the following version of the code will make the point. All you need to know is that the numeric argument represents a distance.
+Perhaps the next version of the code will drive home the point. The outcome is
+the same as before, but the layout is stated in a more human-friendly way. You might even
+infer by yourself that the numeric argument represents the distance between the objects.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -1242,7 +1260,9 @@ topToBottom(20)(Base, B);
 \hspace{1cm}\includegraphics{fig/positioning.2}
 \end{multicols}
 
-Below there are examples which show how these macros can be used. Suppose that we have the following definitions for objects {\code X}, {\code Y}, and {\code Z}; also, let's assume that {\code spacing} is a numeric variable set to {\code 5}.
+Below there are examples which show how these macros can be used. Suppose that we have the 
+following definitions for objects {\code X}, {\code Y}, and {\code Z}; also, let's assume 
+that {\code spacing} is a numeric variable set to {\code 5}.
 
 \begin{verbatim}
 Picture.X("a");
@@ -1266,7 +1286,7 @@ Picture.Z("Cyan");
 \hline
 \end{tabular} \\
 
-To make typesetting even quicker in frequent usage scenarios, the following equivalent contructs are also allowed:
+To make things even easier, the following equivalent contructs are also allowed:
 
 \begin{verbatim}
 leftToRight.midy(spacing)(X, Y, Z);
@@ -1297,8 +1317,8 @@ This macro accepts a variable number of parameters, but at least two. The follow
 \hline
 \end{tabular} \\
 
-
-To specify the relative position of two points more easily, one can use the macros {\code below}, {\code above}, {\code atright}, {\code atleft}. Let us assume that {\code A} and {\code B} are two points (objects of type {\code pair} in MetaPost). The following constructs are equivalent:
+Relative positions of two points can be declared more easily using the macros {\code below}, {\code above}, {\code atright}, {\code atleft}.
+Let us assume that {\code A} and {\code B} are two points (objects of type {\code pair} in MetaPost). The following constructs are equivalent:
 
 \begin{tabular}{||l|l||}
 \hline
@@ -1317,7 +1337,7 @@ MetaPost is a macro language based on equation solving. Using it may seem quite
 tricky at first for a programmer accustomed to modern object-oriented languages.
 However, the great power of MetaPost consists in its versatility. Indeed, it is possible to write
 a system which mimics quite well object-oriented behavior. Along this line, METAOBJ
-(\cite{metaobj}) is a library worth mentioning: it provides a high-level objects
+\cite{metaobj} is a library worth mentioning: it provides a high-level objects
 infrastructure along with a battery of predefined objects.
 
 Surprisingly enough, MetaUML does not use METAOBJ. Instead, it uses a custom written,
@@ -1332,8 +1352,8 @@ Another library having some object-oriented traits is the {\code boxes}
 library, which comes with the standard MetaPost distribution. Early versions of
 MetaUML did use {\code boxes} as an infrastructure, but this approach had to be abandoned eventually.
 The main reason was that it was difficult to achieve good visual results when stacking texts
-(more on that further on). Also, it had a degree of flexibility which became apparent to be
-insufficient.
+(more on that further on). For all it's worth, it did not fit well with the way in which MetaUML's
+layout mechanism was shaping up at the time.
 
 \subsection{Motivation}
 
@@ -1354,10 +1374,10 @@ draw a.sw -- b.se dashed evenly
 \hspace{1cm}\includegraphics{fig/boxes_vs_util.1}
 \end{multicols}
 
-Note that, despite supposedly having their bottoms alligned,
+Note that, despite supposedly having their bottom lines alligned,
 ``yummy'' {\it looks} slightly higher than ``cool''. This would be unacceptable
 in a UML class diagram, when roles are placed at the ends of a horizontal association.
-Regardless of default spacing being smaller in the {\code util} library,
+Regardless of the default spacing being smaller in the {\code util} library,
 the very same unfortunate misalignment effect rears its ugly head:
 
 \begin{multicols}{2}
@@ -1597,12 +1617,10 @@ drawObject(g);
 \hspace{1cm}\includegraphics{fig/group.1}
 \end{multicols}
 
-Note that after some objects are grouped, they can all be drawn
-by invoking the {\code drawObject} macro solely on the group that aggregates them.
-Another important remark is that it is necessary only to set the relative
-positioning of objects within a group (line A and B); afterward, one can
-simply ``move'' the group to a given position (line C), and all the contained
-objects will move along.
+After some objects are grouped, they can only be drawn
+by invoking the {\code drawObject} macro on the group that aggregates them, and not individually.
+Conveniently, once the relative positioning of objects within a group is set (line A and B), the whole
+group can be ``moved'' do the desired position (line C), and all the contained objects will move along.
 
 \subsection{The PictureStack Macro}
 
@@ -1645,7 +1663,7 @@ Each MetaUML component (e.g. {\code Picture}, {\code PictureStack}, {\code Class
 designed according to an established pattern. This section gives more insight
 on this.
 
-In order to draw a component, one must know the following information:
+In order to draw a component, MetaUML categorizes the required information as follows:
 \begin{itemize}
 \item what to draw, or what are the elements of a component.
 \item how to draw, or how are the elements positioned in relation to each other within the component
@@ -1686,8 +1704,7 @@ drawObject(pict);
 How about question 2, how to draw? By default, this problem is addressed behind the
 scenes by the component. This means, for the Picture object, that a native picture is created
 from the given string, and around that picture certain margins are placed, by means of MetaPost equations.
-(The margins come in handy when one wants to quickly place Picture objects near others,
-so that the result doesn't look too cluttered.)
+(The margins also come in handy when stacking Picture objects, so that the result doesn't look too cluttered.)
 If these equations were defined within the Picture constructor, then an
 usability problem would have appeared, because it wouldn't have been possible to modify the margins,
 as in the code below:
@@ -1735,7 +1752,7 @@ draw red rectangle defined by c;
 draw components o1, o2, ...ok within c
 \end{verbatim}
 
-Note that an object mustn't be laid out more than once, because otherwise
+A natural conclusion is that an object must not be laid out more than once, because otherwise
 inconsistent or superfluous equations would arise. To enforce this, by contract,
 any object must keep record of whether its layout method has already been invoked,
 and if the answer is affirmative, subsequent invocations of the layout macro would
@@ -1746,10 +1763,11 @@ no subsequent effect, since the layout equations are declared and interpreted on
 \subsection{Notes on the Implementation of Links}
 
 MetaUML considers edges in diagram graphs as links. A link is composed of a path and the
-heads (possible none, one or two). For example, an association has no heads, and one must simply
-draw along the path with a solid pen. An unidirectional aggregation has a solid path and two
-heads: one is an arrow and the other is a diamond. So the template algorithm for drawing a link
-is:
+heads (possible none, one or two). For example, since an association has no heads, it suffices 
+to draw along the path with a solid pen; however, an unidirectional aggregation has, in addition 
+to a solid path, two heads: one is an arrow and the other is a diamond.
+
+The general algorithm for drawing a link is:
 
 \begin{verbatim}
 0. Reserve space for heads
@@ -1925,8 +1943,7 @@ drawObjects(A, B, C);
 
 \subsection{Individual settings}
 
-When one wants to make modifications to the settings of one particular
-{\code Class} objects, another strategy is more appropriate. How about having class
+To modify the settings of one particular {\code Class} objects, another strategy is more appropriate. How about having class
 {\code C} stand out with a light blue foreground color, a bigger font size for the class name and a blue border?
 
 \begin{multicols}{2}
@@ -1947,10 +1964,10 @@ drawObjects(A, B, C);
 \hspace{1cm}\includegraphics{fig/class_customization.2}
 \end{multicols}
 
-As an aside, note that for each {\code Class} object its {\code info} member is created as
-a copy of {\code iClass}: the actual drawing is performed using this copied
-information. Because of that, one can modify the {\code info} member after the object
-has been created and still get the desired results.
+As an aside, each {\code Class} object has an {\code info} member which is created as
+a copy of {\code iClass}; the actual drawing is performed using this copied
+information. Because of that, the {\code info} member can be safely modified after the object
+has been created, obtaining the expected results and not influencing other objects.
 
 Another thing worth mentioning is that the {\code ClassInfo} structure contains
 the {\code iName} member, which is an instance of {\code PictureInfo}. In our example we
@@ -1961,7 +1978,6 @@ we modify the {\code iName.iFont} member, which by default is a copy of {\code i
 If, for example, we want to change the font the class name is rendered into, we would set
 the attribute {\code iName.iFont.name} to a string representing a font name
 on our system (as used with the MetaPost {\code infont} operator).
-
 
 \subsection{Predefined settings}
 
@@ -1998,9 +2014,8 @@ EClass.D(iRemote)("CartRemote")()();
 
 \subsection{Extreme customization}
 
-When another font (or font size) is used, one may also want to modify the spacings between the
-attributes' and methods' baselines. Figure below is the result of the
-(unlikely) code:
+When another font (or font size) is used, it may become necessary to change the space between the
+baselines of attributes and methods. Figure below is the result of the (unlikely) code:
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -2034,53 +2049,24 @@ Both {\code iAttributeStack} and {\code iMethodStack} are instances of
 
 As font names, you can choose from the globally defined {\code metauml\_defaultFont}, {\code metauml\_defaultFontOblique}, {\code metauml\_defaultFontBold}, {\code metauml\_defaultFontBoldOblique}, or any other name of a font that is available on your system.
 
-%\theendnotes
+\section{Alternatives to MetaUML}
 
-\bibliographystyle{apalike}
+No software package is perfect, and for this MetaUML is a prime example. Here is a list of packages that may also be used to create UML diagrams for LaTeX work:
 
-\begin{thebibliography}{1}
-\bibitem[Roegel, 2002]{metaobj}
-Roegel, D. (2002).
-\newblock {The METAOBJ tutorial and reference manual}.
-\newblock Available from {\code www.loria.fr/~roegel/TeX/momanual.pdf}.
+\begin{itemize}
+\item uml.sty \cite{umlsty}
+\item pst-uml \cite{pstumlsty}
+\item umldoc \cite{umldoc}
+\item TiKZ-UML \cite{tikzuml}
+\end{itemize}
 
-\bibitem[Knuth, 1986]{knuth}
-Knuth, D.~E. (1986).
-\newblock {\em The {\TeX{}}book}.
-\newblock Addison-Wesley Publishing Company.
-
-\bibitem[Lamport, 1994]{lamport}
-Lamport, L. (1994).
-\newblock {\em {\LaTeX} a Document Preparation System}.
-\newblock Addison-Wesley Publishing Company, 2nd edition.
-
-\bibitem[Hobby, 1992]{metapost}
-Hobby, J. (1992)
-\newblock {A User's Manual for MetaPost}.
-\newblock Available from {\code http://www.tug.org/tutorials/mp/}.
-
-\bibitem[Gjelstad, 2001]{umlsty}
-Gjelstad, E. (2001).
-\newblock {uml.sty 0.09.09}.
-\newblock Available from {\code http://heim.ifi.uio.no/\~{ }ellefg/uml.sty/}.
-
-\bibitem[Diamantini, 1998]{pstumlsty}
-Diamantini, M. (1998).
-\newblock {Interface utilisateur du package pst-uml}.
-\newblock Available from {\code http://perce.de/LaTeX/pst-uml/}.
-
-\bibitem[Palmer, 1999]{umldoc}
-Palmer, D. (1999).
-\newblock {The umldoc UML Documentation Package}.
-\newblock Available from {\code http://www.charvolant.org/\~{ }elements/}.
-
-\bibitem[OMG, 2003]{XMI}
-Object Management Group (2003).
-\newblock {XML Metadata Interchange (XMI) Specification}.
-\newblock Available from {\code http://www.omg.org/}.
-\end{thebibliography}
+Do not ignore the possibility of creating your diagrams using a GUI program, and then exporting them into a LaTex-friendly open format such as SVG \cite{svglatex}.
 
 \pagebreak
 \input{test-suite}
+
+\pagebreak
+\section{References}
+\printbibliography[heading=none]
 
 \end{document}

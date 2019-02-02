@@ -1,0 +1,19 @@
+MetaUML https://github.com/ogheorghies/MetaUML
+
+Version: METAUML_RELEASE_VERSION
+Author : Ovidiu Gheorghies
+Date   : METAUML_RELEASE_DATE
+
+MetaUML is a MetaPost library for creating UML diagrams using a textual notation.
+It offers partial support for:
+- class diagrams
+- package diagrams
+- activity diagrams
+- use case diagrams
+- state machine diagrams
+
+This release contains the following directories:
+
+doc      : PDF documentation
+examples : source code for the documentation
+inputs   : the macros needed to use MetaUML
