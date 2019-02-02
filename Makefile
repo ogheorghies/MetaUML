@@ -4,7 +4,8 @@
 .PHONY: docker-release release release-tgz clean
 
 _UID=$(shell id -u)
-TAG_NAME := $(or $(TAG_NAME),$(shell git describe --tags | rev | cut -f3- -d- | rev | cut -f2- -dv ))
+TAG_NAME := $(or $(TAG_NAME),$(shell git describe --tags | rev | cut -f3- -d- | rev ))
+TAG_NAME := $(TAG_NAME:v%=%)
 REVISION_ID := $(or $(REVISION_ID),$(shell git describe --tags | rev | cut -f-2 -d- | rev))
 METAUML_RELEASE_DATE := $(shell date "+%B %d, %Y")
 
