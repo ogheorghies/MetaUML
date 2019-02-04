@@ -11,20 +11,20 @@ METAUML_RELEASE_DATE := $(shell date "+%B %d, %Y")
 
 release:
 	make -C manual
-	if [ -d dist/build ]; then rm -rf dist/build; fi
-	mkdir -p dist/build
-	mkdir dist/build/doc
-	mkdir dist/build/examples
-	mkdir dist/build/inputs
-	sed -e 's/METAUML_RELEASE_VERSION/$(TAG_NAME_NO_V)/' -e 's/METAUML_RELEASE_DATE/$(METAUML_RELEASE_DATE)/' ctan/README >dist/build/README
-	cp manual/metauml-manual.pdf dist/build/doc/metauml-manual-$(TAG_NAME)-$(REVISION_ID).pdf
-	cp src/*.mp dist/build/inputs
-	cp -r manual dist/build/examples/
-	find dist/build/examples/ -type f -not -name "*.mp" -not -name "*.tex" -not -name "*.bib" | xargs rm
+	if [ -d dist/metauml ]; then rm -rf dist/metauml; fi
+	mkdir -p dist/metauml
+	mkdir dist/metauml/doc
+	mkdir dist/metauml/examples
+	mkdir dist/metauml/inputs
+	sed -e 's/METAUML_RELEASE_VERSION/$(TAG_NAME_NO_V)/' -e 's/METAUML_RELEASE_DATE/$(METAUML_RELEASE_DATE)/' ctan/README >dist/metauml/README
+	cp manual/metauml-manual.pdf dist/metauml/doc/metauml-manual-$(TAG_NAME)-$(REVISION_ID).pdf
+	cp src/*.mp dist/metauml/inputs
+	cp -r manual dist/metauml/examples/
+	find dist/metauml/examples/ -type f -not -name "*.mp" -not -name "*.tex" -not -name "*.bib" | xargs rm
 
 release-tgz:
 	[ -d dist/archive ] || mkdir -p dist/archive
-	tar -C dist/build -cvf dist/archive/metauml-$(TAG_NAME)-$(REVISION_ID).tgz .
+	tar -C dist/ -cvf dist/archive/metauml-$(TAG_NAME)-$(REVISION_ID).tgz metauml
 
 clean:
 	echo "Not implemented"
