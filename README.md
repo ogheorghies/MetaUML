@@ -14,7 +14,7 @@ end
 mptopdf example.mp
 ```
 
-For more information, see the [wiki](https://github.com/ogheorghies/MetaUML/wiki) and the [manual](https://github.com/ogheorghies/MetaUML/releases/download/v0.2.5/metauml_manual_0.2.5.pdf).
+For more information, see the [wiki](https://github.com/ogheorghies/MetaUML/wiki) and the [manual](https://github.com/ogheorghies/MetaUML/releases/download/v0.2.6/metauml-manual-v0.2.6-19d34de3da75cbd9f814f0a9ec03b4e0861b1541.pdf).
 
 # Development
 
