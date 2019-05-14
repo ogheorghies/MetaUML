@@ -52,15 +52,14 @@ inputonce metauml_state;
 inputonce metauml_usecase_clipart;
 inputonce metauml_usecase;
 
-input metauml_behavioral_common;
-input metauml_activity;
-input metauml_state;
+inputonce metauml_behavioral_common;
+inputonce metauml_activity;
+inputonce metauml_state;
 
-input metauml_usecase_clipart;
-input metauml_usecase;
+inputonce metauml_usecase_clipart;
+inputonce metauml_usecase;
 
-input metauml_component;
-input metauml_component_relations;
+inputonce metauml_component;
+inputonce metauml_component_relations;
 
-input metauml_templates;
-
+inputonce metauml_templates;
