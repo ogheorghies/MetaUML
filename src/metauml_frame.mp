@@ -97,7 +97,7 @@ enddef;
 
 vardef Frame_layout@#=
   if @#laidout = 1:
-    log "Frame '" & (str @#) & "' has already been layed out";
+    log "Frame '" & (str @#) & "' has already been laid out";
   else:
     @#laidout := 1;
     log "Frame layout: '" & (str @#) & "'";
@@ -109,7 +109,7 @@ vardef Frame_layout@#=
     log "SubItems for frame layout '" & (str @#) & "'...";
     Group_layout.@#subItems;
 
-    log "All elements in frame '" & (str @#) & "' successfully layed out, integrating...";
+    log "All elements in frame '" & (str @#) & "' successfully laid out, integrating...";
 
     if @#subItems.width < @#nameStack.width + @#kindStack.width + @#info.minimumNameContentsDifference:
       @#contentWidth = @#nameStack.width + @#kindStack.width + @#info.minimumNameContentsDifference;

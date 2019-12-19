@@ -95,7 +95,7 @@ enddef;
 
 vardef Artifact_layout@#=
   if @#laidout = 1:
-    log "Artifact '" & (str @#) & "' has already been layed out";
+    log "Artifact '" & (str @#) & "' has already been laid out";
   else:
     @#laidout := 1;
     log "Artifact layout: '" & (str @#) & "'";
@@ -105,7 +105,7 @@ vardef Artifact_layout@#=
     log "SubItems for artifact layout '" & (str @#) & "'...";
     Group_layout.@#subItems;
 
-    log "All elements in artifact '" & (str @#) & "' successfully layed out, integrating...";
+    log "All elements in artifact '" & (str @#) & "' successfully laid out, integrating...";
 
 
     if @#subItems.width < @#nameStack.width + @#info.minimumNameContentsDifference:
