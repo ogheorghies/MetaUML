@@ -83,7 +83,7 @@ enddef;
 
 vardef Template_layout@#=
   if @#laidout = 1:
-    log "Template " & (str @#) & " has already been layed out";
+    log "Template " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
     log "Template layout: " & (str @#);

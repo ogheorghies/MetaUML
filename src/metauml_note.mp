@@ -96,7 +96,7 @@ enddef;
 
 vardef Note_layout@#=
   if @#laidout = 1:
-    log "Note " & (str @#) & " has already been layed out";
+    log "Note " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
     log "Note layout: " & (str @#);

@@ -317,7 +317,7 @@ enddef;
 
 vardef Class_layout@# =
   if @#laidout = 1:
-    log "Class " & (str @#) & " has already been layed out";
+    log "Class " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
     log "Class layout: " & (str @#);

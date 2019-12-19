@@ -102,7 +102,7 @@ enddef;
 
 vardef Package_layout@#=
   if @#laidout = 1:
-    log "Package '" & (str @#) & "' has already been layed out";
+    log "Package '" & (str @#) & "' has already been laid out";
   else:
     @#laidout := 1;
     log "Package layout: '" & (str @#) & "'";
@@ -112,7 +112,7 @@ vardef Package_layout@#=
     log "SubItems for package layout '" & (str @#) & "'...";
     Group_layout.@#subItems;
 
-    log "All elements in package '" & (str @#) & "' successfully layed out, integrating...";
+    log "All elements in package '" & (str @#) & "' successfully laid out, integrating...";
 
     if @#subItems.nObjects = 0:
         if @#info.forceEmptyContent = 0:

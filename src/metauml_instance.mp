@@ -118,7 +118,7 @@ enddef;
 
 vardef Instance_layout@# =
   if @#laidout = 1:
-    log "Instance " & (str @#) & " has already been layed out";
+    log "Instance " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
     log "Instance layout: " & (str @#);

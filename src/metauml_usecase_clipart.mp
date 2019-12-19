@@ -79,7 +79,7 @@ enddef;
 
 vardef Human_layout@#=
   if @#laidout = 1:
-    log "Human " & (str @#) & " has already been layed out";
+    log "Human " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
     log "Human layout: " & (str @#);
