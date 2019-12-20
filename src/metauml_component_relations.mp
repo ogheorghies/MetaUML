@@ -6,10 +6,10 @@ if known _metauml_component_relations_mp:
 fi;
 _metauml_component_relations_mp:=1;
 
-defaultRelationHeadWidth  := 25;
-defaultRelationHeadHeight := 10;
-requiredInterfaceHeadWidth    := 5;
-requiredInterfaceHeadHeight   := 15;
+defaultRelationHeadWidth    := 12.5;
+defaultRelationHeadHeight   := 0;
+requiredInterfaceHeadWidth  := 17.5;
+requiredInterfaceHeadHeight := 0;
 
 vardef requiredInterfaceInfo@# =
   LinkInfo@#;

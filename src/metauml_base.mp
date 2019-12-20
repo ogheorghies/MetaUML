@@ -122,7 +122,7 @@ vardef drawCrossedCircle(text pA)(text pB)(text height) =
   pD := (width/2, -height/2 - 1);
   pD := pD rotated (alfa) shifted pA;
 
-  fill pA..pB..pA -- cycle withcolor white;
+  fill pA .. pB .. cycle withcolor white;
 
   draw pA -- pB;
   draw pC -- pD;
@@ -141,18 +141,18 @@ vardef drawSemiCircle(text pA)(text pB)(text height) =
   width = _length(pA)(pB);
 
   pair pC, pD;
-  pC := (width/2 + 5, height/2 + 1);
-  pC := pC rotated (alfa) shifted pB;
-  pD := (width/2 + 5, -height/2 - 1);
-  pD := pD rotated (alfa) shifted pB;
+  pC = (0, width) rotated (alfa) shifted pB;
+  pD = (0, -width) rotated (alfa) shifted pB;
 
   draw pC .. pA .. pD;
 enddef;
 
 vardef drawCircle(text pA)(text pB)(text height) =
-  fill pA..pB..pA -- cycle withcolor white;
+  path circ;
+  circ = pA .. 2 * pB - pA .. cycle;
 
-  draw pA .. pB .. pA;
+  fill circ withcolor white;
+  draw circ;
 enddef;
 
 vardef drawLine(expr my_path) =
