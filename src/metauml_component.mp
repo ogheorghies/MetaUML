@@ -95,7 +95,7 @@ enddef;
 
 vardef Component_layout@#=
   if @#laidout = 1:
-    log "Component '" & (str @#) & "' has already been layed out";
+    log "Component '" & (str @#) & "' has already been laid out";
   else:
     @#laidout := 1;
     log "Component layout: '" & (str @#) & "'";
@@ -105,7 +105,7 @@ vardef Component_layout@#=
     log "SubItems for component layout '" & (str @#) & "'...";
     Group_layout.@#subItems;
 
-    log "All elements in component '" & (str @#) & "' successfully layed out, integrating...";
+    log "All elements in component '" & (str @#) & "' successfully laid out, integrating...";
 
 
     if @#subItems.width < @#nameStack.width + @#info.minimumNameContentsDifference:

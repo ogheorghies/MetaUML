@@ -82,7 +82,7 @@ enddef;
 
 vardef Activity_layout@#=
     if @#laidout = 1:
-    log "Activity " & (str @#) & " has already been layed out";
+    log "Activity " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
 

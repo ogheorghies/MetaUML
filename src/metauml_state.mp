@@ -106,7 +106,7 @@ enddef;
 
 vardef State_layout@#=
   if @#laidout = 1:
-    log "State '" & (str @#) & "' has already been layed out";
+    log "State '" & (str @#) & "' has already been laid out";
   else:
     @#laidout := 1;
     log "State layout: '" & (str @#) & "'";
@@ -121,7 +121,7 @@ vardef State_layout@#=
     log "Substates layout '" & (str @#) & "'...";
     Group_layout.@#substates;
 
-    log "All elements in state '" & (str @#) & "' successfully layed out, integrating...";
+    log "All elements in state '" & (str @#) & "' successfully laid out, integrating...";
 
 %    @#internalTransitionsStack.info.boxed := 1;
 

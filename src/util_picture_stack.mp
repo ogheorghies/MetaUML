@@ -105,7 +105,7 @@ enddef;
 
 vardef PictureStack_layout@#=
   if @#laidout = 1:
-    log "PictureStack " & (str @#) & " has already been layed out";
+    log "PictureStack " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
 

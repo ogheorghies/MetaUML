@@ -69,7 +69,7 @@ enddef;
 
 vardef Actor_layout@#=
   if @#laidout = 1:
-    log "Actor " & (str @#) & " has already been layed out";
+    log "Actor " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
     log "Actor layout: " & (str @#);
@@ -159,7 +159,7 @@ enddef;
 
 vardef Usecase_layout@#=
   if @#laidout = 1:
-    log "Usecase " & (str @#) & " has already been layed out";
+    log "Usecase " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
 

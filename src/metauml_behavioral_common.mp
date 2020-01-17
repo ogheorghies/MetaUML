@@ -58,7 +58,7 @@ enddef;
 
 vardef Begin_layout@#=
   if @#laidout = 1:
-    log "Begin " & (str @#) & " has already been layed out";
+    log "Begin " & (str @#) & " has already been laid out";
   else:
     @#laidout := 1;
 
