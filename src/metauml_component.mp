@@ -10,12 +10,12 @@ _metauml_component_mp:=1;
 % The guard values (such as _metauml_mp) do ensure that the file isn't loaded multiple times, 
 % but this macro makes sure that MetaPost won't try to load the file and display a message for that.
 def inputonce text libraryFile=
-	if not known scantokens ("_" & str libraryFile & "_mp"):
-		%includeonce% show "Loading " & str libraryFile;
-		scantokens ("input " & str libraryFile);
-	else:
-		%includeonce% show str libraryFile & " already loaded.";
-	fi;
+  if not known scantokens ("_" & str libraryFile & "_mp"):
+    %includeonce% show "Loading " & str libraryFile;
+    scantokens ("input " & str libraryFile);
+  else:
+    %includeonce% show str libraryFile & " already loaded.";
+  fi;
 enddef;
 
 inputonce metauml_defaults;
@@ -113,14 +113,14 @@ vardef Component_layout@#=
     else:
       @#contentWidth = lmax(@#nameStack.width, @#subItems.width);
     fi;
-    
+
     @#width = @#contentWidth + @#info.left + @#info.right + 15;
-    
+
     if @#nSubItems = 0:
-       @#height = @#info.top + @#info.bottom + @#subItems.height + 15;
+       @#height = @#info.top + @#info.bottom + @#nameStack.height + @#subItems.height;
        @#nameStack.n = @#n - (0, 7);
     else:
-       @#height = @#info.top + @#info.bottom + @#subItems.height + 30;
+       @#height = @#info.top + @#info.bottom + @#nameStack.height + @#subItems.height + 15;
        @#nameStack.n = @#n + (0, @#info.top) - (0, 5);
     fi;
 
@@ -143,12 +143,11 @@ vardef Component_draw@#=
 
   fill @#border withcolor @#info.foreColor;
   draw @#border withcolor @#info.borderColor;
-  
+
   drawComponentVisualStereotype(@#ne);
-  
+
   drawObject(@#nameStack);
   drawObject(@#subItems);
-
 enddef;
 
 vardef drawComponentVisualStereotype(text ne)=
@@ -156,7 +155,7 @@ vardef drawComponentVisualStereotype(text ne)=
   pair lud, luu, ru, rd, ldd, ldu, lmd, lmu;
   % urectld = upper rectangle left-down, lrectru = lower rectangle right-up
   pair urectld, urectlu, urectru, urectrd, lrectld, lrectlu, lrectru, lrectrd;
-  lud = ne - (14, 5 );
+  lud = ne   - (14, 5 );
   luu = lud  + (0,  2 );
   ru  = luu  + (8,  0 );
   rd  = ru   - (0,  14);
