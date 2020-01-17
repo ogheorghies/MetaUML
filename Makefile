@@ -20,7 +20,7 @@ release:
 	cp manual/metauml-manual.pdf dist/metauml/doc/metauml-manual-$(TAG_NAME)-$(REVISION_ID).pdf
 	cp src/*.mp dist/metauml/inputs
 	cp -r manual dist/metauml/examples/
-	find dist/metauml/examples/ -type f -not -name "*.mp" -not -name "*.tex" -not -name "*.bib" | xargs rm
+	find dist/metauml/examples/ -type f -not -name "*.mp" -not -name "*.tex" -not -name "*.bib" -exec rm {} +
 
 release-tgz:
 	[ -d dist/archive ] || mkdir -p dist/archive
