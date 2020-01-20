@@ -158,22 +158,22 @@ vardef rpathVertical(expr pA, untilY) =
   (xpart(pA), untilY)--pA
 enddef;
 
-vardef pathHX(expr pA, pB, fraction) =
+vardef pathStepFractionalX(expr pA, pB, fraction) =
   fracX := fraction[xpart pA, xpart pB];
   pA--(fracX, ypart pA)--(fracX, ypart pB)--pB
 enddef;
 
-vardef rpathHX(expr pA, pB, fraction) =
-  reverse pathHX
+vardef rpathStepFractionalX(expr pA, pB, fraction) =
+  reverse pathStepFractionalX(pA, pB, fraction)
 enddef;
 
-vardef pathHY(expr pA, pB, fraction) =
+vardef pathStepFractionalY(expr pA, pB, fraction) =
   fracY := fraction[ypart pA, ypart pB];
   pA--(xpart pA, fracY)--(xpart pB, fracY)--pB
 enddef;
 
-vardef rpathHY(expr pA, pB, fraction) =
-  reverse pathHY
+vardef rpathStepFractionalY(expr pA, pB, fraction) =
+  reverse pathStepFractionalY(pA, pB, fraction)
 enddef;
 
 % Cuts path thePath so that it won't intersect the objects
