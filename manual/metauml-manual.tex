@@ -1101,7 +1101,9 @@ The ``stair'' can ``rise'' first in the direction of $Ox$ axis ({\code pathStepX
 or in the direction of $Oy$ axis ({\code pathStepY}). How much should a step
 rise is given by an additional parameter, {\code delta}. Again, the macros
 prefixed with ``{\code r}'' reverse the direction of the path given by their
-unprefixed counterparts.
+unprefixed counterparts. Additionally macros are provided that take the step size
+as a fraction instead of an absolute value. These macros draw the middle segment
+at {\code fraction} from point {\code A} and one minus {\code fraction} from point {\code B}.
 
 \begin{verbatim}
 pathStepX(A, B, delta)
@@ -1109,6 +1111,12 @@ pathStepY(A, B, delta)
 
 rpathStepX(A, B, delta)
 rpathStepY(A, B, delta)
+
+pathStepFractionalX(A, B, fraction)
+pathStepFractionalY(A, B, fraction)
+
+rpathStepFractionalX(A, B, fraction)
+rpathStepFractionalY(A, B, fraction)
 \end{verbatim}
 
 Here is an example:
