@@ -1,8 +1,8 @@
 % Copyright 2005 2015 Ovidiu Gheorghies
 % Licensed under the Apache License, Version 2.0.
 
-if known _metauml_paths_mp: 
-  expandafter endinput 
+if known _metauml_paths_mp:
+  expandafter endinput
 fi;
 _metauml_paths_mp:=1;
 
@@ -14,26 +14,26 @@ vardef pathManhattanX(text twoParams) =
   pair pointA__, pointB__;
   string  paramA_str__, paramB_str__;
   boolean paramA_isObject__, paramB_isObject__;
-  
+
   paramA_isObject__ := true;
   paramB_isObject__ := true;
-  
+
   boolean isFirstParam__;
   isFirstParam__ := true;
 
   %string twoParams;
   %twoParams := "";
-  
+
   %twoParams := str paramA & ", " & str paramB;
   %%includeonce% show "the two params are: " & twoParams;
-  
+
   forsuffixes param__ = twoParams:
-    
+
     if isFirstParam__:
       isFirstParam__ := false;
       paramA_str__ := str param__;
       %includeonce% show "paramA_str__ <-- " & paramA_str__;
-      
+
       if not known (scantokens (paramA_str__ & ".className")):
         %includeonce% show "paramA is not an object";
         paramA_isObject__ := false;
@@ -41,7 +41,7 @@ vardef pathManhattanX(text twoParams) =
     else:
       paramB_str__ := str param__;
       %includeonce% show "paramB_str__ <-- " & paramB_str__;
-      
+
       if not known (scantokens (paramB_str__ & ".className")):
         %includeonce% show "paramB is not an object";
         paramB_isObject__ := false;
@@ -51,17 +51,16 @@ vardef pathManhattanX(text twoParams) =
 
   %includeonce% show paramA_str__;
   %includeonce% show paramA_isObject__;
-  
+
   %includeonce% show paramB_str__;
   %includeonce% show paramB_isObject__;
-  
+
   string stringPath__;
   stringPath__ := "(0,0)--(50,50)";
-  
+
   if (not paramA_isObject__) and (not paramB_isObject__):
     %includeonce% show "Both are points!";
-    
-    
+
     stringPath__ := paramA_str__ & "--(xpart " & paramB_str__ & ", ypart " & paramA_str__ & ") -- " & paramB_str__;
     %includeonce% show stringPath__;
   else:
@@ -76,21 +75,21 @@ vardef pathManhattanX(text twoParams) =
     else:
       refPointB__ := scantokens paramB_str__;
     fi;
-    
+
     %includeonce% show "Reference point A: ";
     %includeonce% show refPointA__;
     %includeonce% show "Reference point B: ";
     %includeonce% show refPointB__;
-    
+
     numeric dx__, dy__;
     dx__ := xpart refPointB__ - xpart refPointA__;
     dy__ := ypart refPointB__ - ypart refPointA__;
-    
+
     string addornmentA__;
     addornmentA__ := "";
     string addornmentB__;
     addornmentB__ := "";
-    
+
     if (paramA_isObject__):
       if (dx__ > 0):
         addornmentA__ := ".e";
@@ -98,7 +97,7 @@ vardef pathManhattanX(text twoParams) =
         addornmentA__ := ".w";
       fi;
     fi;
-    
+
     if (paramB_isObject__):
       if (dy__ > 0):
         addornmentB__ := ".s";
@@ -107,11 +106,11 @@ vardef pathManhattanX(text twoParams) =
       fi;
     fi;
     stringPath__ := "pathManhattanX(" & paramA_str__ & addornmentA__ & ", " & paramB_str__ & addornmentB__ & ")";
-    
+
     %includeonce% show stringPath;
     %includeonce% show "-------------------> recursive call";
   fi;
-  
+
   scantokens stringPath__
 enddef;
 
@@ -159,13 +158,30 @@ vardef rpathVertical(expr pA, untilY) =
   (xpart(pA), untilY)--pA
 enddef;
 
+vardef pathStepFractionalX(expr pA, pB, fraction) =
+  fracX := fraction[xpart pA, xpart pB];
+  pA--(fracX, ypart pA)--(fracX, ypart pB)--pB
+enddef;
+
+vardef rpathStepFractionalX(expr pA, pB, fraction) =
+  reverse pathStepFractionalX(pA, pB, fraction)
+enddef;
+
+vardef pathStepFractionalY(expr pA, pB, fraction) =
+  fracY := fraction[ypart pA, ypart pB];
+  pA--(xpart pA, fracY)--(xpart pB, fracY)--pB
+enddef;
+
+vardef rpathStepFractionalY(expr pA, pB, fraction) =
+  reverse pathStepFractionalY(pA, pB, fraction)
+enddef;
+
 % Cuts path thePath so that it won't intersect the objects
 % objectA and objectB. The border of the objects is obtained
 % by invoking the method "_border".
-% 
 vardef pathCut(suffix objectA, objectB)(expr thePath)=
   save timeA, timeB;
-  
+
   timeA = xpart (thePath intersectiontimes objectBorder(objectA));
   timeB = xpart (thePath intersectiontimes objectBorder(objectB));
 
