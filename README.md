@@ -21,9 +21,21 @@ For more information, see the [wiki](https://github.com/ogheorghies/MetaUML/wiki
 ```
 sudo apt install texlive-metapost
 git clone git@github.com:ogheorghies/MetaUML.git
-
-export METAUML_DIR=/usr/share/texlive/texmf-dist/metapost/metauml
-
-sudo mv ${METAUML_DIR} ${METAUML_DIR}-backup-$(date +%s)
-sudo ln -svf ${PWD}/MetaUML/src /usr/share/texlive/texmf-dist/metapost/metauml
 ```
+
+* **By replacing the distribution provided MetaUML**
+  ```
+  export METAUML_DIR=/usr/share/texlive/texmf-dist/metapost/metauml
+
+  sudo mv ${METAUML_DIR} ${METAUML_DIR}-backup-$(date +%s)
+  sudo ln -svf ${PWD}/MetaUML/src /usr/share/texlive/texmf-dist/metapost/metauml
+  ```
+
+* **By specifying `MPINPUTS`**
+  ```
+  export MPINPUTS="${PWD}/MetaUML/src:"
+  ```
+  **or**
+  ```
+  export MPINPUTS="${PWD}/MetaUML/src:${MPINPUTS}"
+  ```
