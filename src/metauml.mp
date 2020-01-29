@@ -10,12 +10,12 @@ _metauml_mp:=1;
 % The guard values (such as _metauml_mp) do ensure that the file isn't loaded multiple times, 
 % but this macro makes sure that MetaPost won't try to load the file and display a message for that.
 def inputonce text libraryFile=
-	if not known scantokens ("_" & str libraryFile & "_mp"):
-		%includeonce% show "Loading " & str libraryFile;
-		scantokens ("input " & str libraryFile);
-	else:
-		%includeonce% show str libraryFile & " already loaded.";
-	fi;
+  if not known scantokens ("_" & str libraryFile & "_mp"):
+    %includeonce% show "Loading " & str libraryFile;
+    scantokens ("input " & str libraryFile);
+  else:
+    %includeonce% show str libraryFile & " already loaded.";
+  fi;
 enddef;
 
 inputonce util_infrastructure;
@@ -34,6 +34,8 @@ inputonce metauml_links;
 inputonce metauml_paths;
 
 inputonce metauml_note;
+
+inputonce metauml_frame;
 
 inputonce metauml_stereotype;
 
@@ -62,4 +64,8 @@ inputonce metauml_usecase;
 inputonce metauml_component;
 inputonce metauml_component_relations;
 
+inputonce metauml_artifact;
+
 inputonce metauml_templates;
+
+inputonce metauml_node;
