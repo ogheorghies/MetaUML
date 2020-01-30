@@ -1,6 +1,6 @@
 steps:
 - name: 'blang/latex:ctanfull'
-  args: ['bash', '-c', 'set -x; rm -rf /usr/local/texlive/2017/texmf-dist/metapost/metauml; export MPINPUTS=/workspace/src; make release; make release-tgz']
+  args: ['bash', '-c', 'set -x; rm -rf /usr/local/texlive/2017/texmf-dist/metapost/metauml; export MPINPUTS=/workspace/src:; make release; make release-tgz']
   env:
   - 'BRANCH_NAME=$BRANCH_NAME'
   - 'TAG_NAME=$TAG_NAME'
