@@ -10,12 +10,12 @@ _metauml_package_mp:=1;
 % The guard values (such as _metauml_mp) do ensure that the file isn't loaded multiple times, 
 % but this macro makes sure that MetaPost won't try to load the file and display a message for that.
 def inputonce text libraryFile=
-	if not known scantokens ("_" & str libraryFile & "_mp"):
-		%includeonce% show "Loading " & str libraryFile;
-		scantokens ("input " & str libraryFile);
-	else:
-		%includeonce% show str libraryFile & " already loaded.";
-	fi;
+  if not known scantokens ("_" & str libraryFile & "_mp"):
+    %includeonce% show "Loading " & str libraryFile;
+    scantokens ("input " & str libraryFile);
+  else:
+    %includeonce% show str libraryFile & " already loaded.";
+  fi;
 enddef;
 
 inputonce metauml_defaults;
@@ -23,15 +23,16 @@ inputonce util_log;
 
 vardef PackageInfo@#=
   attributes(@#);
-  var(color)   foreColor, borderColor;
-  var(numeric) forceEmptyContent;
-  var(numeric) minimumNameContentsDifference;
+  var(color)  foreColor, borderColor;
+  var(numeric)forceEmptyContent;
+  var(numeric)minimumNameContentsDifference;
+  var(numeric)emptyNameHeight;
 
   FontInfo.@#iFont(metauml_defaultFont, defaultscale);
   @#iFont.ignoreNegativeBase := 1;
 
-  PictureInfo.@#iText  (2, 2, 2, 2)(@#iFont);
-  PictureStackInfo.@#iNameStack (2, 2, 2, 2)(9)(@#iText);
+  PictureInfo.@#iText(2, 2, 2, 2)(@#iFont);
+  PictureStackInfo.@#iNameStack(2, 2, 2, 2)(9)(@#iText);
   @#iNameStack.iPict.ignoreNegativeBase := 1;
 
   Margins.@#(2,2,2,2);
@@ -43,6 +44,7 @@ vardef PackageInfo@#=
   @#forceEmptyContent := 0;
 
   @#minimumNameContentsDifference := 20;
+  @#emptyNameHeight := 10;
 
   GroupInfo.@#iContentsGroup(2, 2, 10, 2);
 enddef;
@@ -51,11 +53,12 @@ vardef PackageInfoCopy@#(text src)=
   log "PackageInfoCopy: Copying package info";
 
   attributes(@#);
-  var(color)   foreColor, borderColor;
-  var(numeric) forceEmptyContent;
-  var(numeric) minimumNameContentsDifference;
+  var(color)  foreColor, borderColor;
+  var(numeric)forceEmptyContent;
+  var(numeric)minimumNameContentsDifference;
+  var(numeric) emptyNameHeight;
 
-  PictureStackInfoCopy.@#iNameStack (src.iNameStack);
+  PictureStackInfoCopy.@#iNameStack(src.iNameStack);
   MarginsCopy.@#(src);
 
   ShadeInfoCopy.@#iShade(src.iShade);
@@ -65,6 +68,7 @@ vardef PackageInfoCopy@#(text src)=
   @#forceEmptyContent := src.forceEmptyContent;
 
   @#minimumNameContentsDifference := src.minimumNameContentsDifference;
+  @#emptyNameHeight := src.emptyNameHeight;
 
   GroupInfoCopy.@#iContentsGroup(src.iContentsGroup);
 enddef;
@@ -83,17 +87,12 @@ vardef EPackage@#(text _info)(text contents)(text _subItems)=
 
   numeric @#nLines; @#nLines := 0;
   string @#lines[];
-%  numeric @#nSubItems; @#nSubItems := 0;
   numeric @#nameInCenter; @#nameInCenter := 0;
 
   for l=contents:
     @#lines[@#nLines] := l;
     @#nLines := @#nLines + 1;
   endfor;
-
-%  for s=_subItems:
-%    @#nSubItems := @#nSubItems + 1;
-%  endfor;
 
   EGroup.@#subItems(@#info.iContentsGroup)(_subItems);
 
@@ -126,17 +125,17 @@ vardef Package_layout@#=
       @#contentWidth = lmax(@#nameStack.width, @#subItems.width);
     fi;
 
-    if @#nameInCenter = 1:
-      @#height = @#info.top + @#info.bottom + @#nameStack.height;
-      @#width = @#info.left + @#info.right + @#nameStack.width;
-      @#nameStack.sw = @#sw + (@#info.left, @#info.bottom);
-    else:
-      @#nameStack.sw = @#nw;
+    if @#nameInCenter = 0:
       @#width = @#contentWidth + @#info.left + @#info.right;
-      @#height = @#info.top + @#info.bottom + @#subItems.height;
+      @#height = @#info.top + @#info.bottom + @#nameStack.height + @#subItems.height;
+      @#nameStack.nw = @#nw;
+    else:
+      @#width = @#info.left + @#info.right + @#nameStack.width;
+      @#height = @#info.top + @#info.bottom + @#info.emptyNameHeight + @#nameStack.height;
+      @#nameStack.sw = @#sw + (@#info.left, @#info.bottom);
     fi;
 
-    @#subItems.n = @#n + (0, -((@#height - @#subItems.height)/2));
+    @#subItems.s = @#s + (0, @#info.bottom);
 
     log "Package layout for " & (str @#) & " ended.";
   fi;
@@ -147,30 +146,30 @@ vardef Package_draw@#=
   objectEnsurePositioning.@#;
 
   attributes(@#);
-  var(path) border, nameStackBorder, emptyNameBorder;
+  var(path) contentBorder, tagBorder, totalBorder;
 
-  @#border := @#ne -- @#nw -- @#sw -- @#se -- cycle;
-  @#nameStackBorder := @#nameStack.ne -- @#nameStack.nw -- @#nameStack.sw -- @#nameStack.se -- cycle;
-  @#emptyNameBorder := @#nw -- @#nw + (0, 10) -- @#n + (0, 10) -- @#n -- cycle;
+  if @#nameInCenter = 0:
+    @#contentBorder := @#ne - (0, @#nameStack.height) -- @#nameStack.sw -- @#sw -- @#se -- cycle;
+    @#tagBorder := @#nameStack.nw -- @#nameStack.ne -- @#nameStack.se -- @#nameStack.sw -- cycle;
+    @#totalBorder := @#nw -- @#nameStack.ne -- @#nameStack.se -- @#ne - (0, @#nameStack.height) -- @#se -- @#sw -- cycle;
+  else:
+    @#contentBorder := @#nw - (0, @#info.emptyNameHeight) -- @#ne - (0, @#info.emptyNameHeight) -- @#se -- @#sw -- cycle;
+    @#tagBorder := @#nw -- @#nw - (0, @#info.emptyNameHeight) -- @#n - (0, @#info.emptyNameHeight) -- @#n -- cycle;
+    @#totalBorder := @#nw -- @#n -- @#n - (0, @#info.emptyNameHeight) -- @#ne - (0, @#info.emptyNameHeight) -- @#se -- @#sw -- cycle;
+  fi;
 
   drawObjectShade(@#);
 
-  fill @#border withcolor @#info.foreColor;
-  draw @#border withcolor @#info.borderColor;
-  if @#nameInCenter = 0:
-     fill @#nameStackBorder withcolor @#info.foreColor;
-     draw @#nameStackBorder withcolor @#info.borderColor;
-  else:
-     fill @#emptyNameBorder withcolor @#info.foreColor;
-     draw @#emptyNameBorder withcolor @#info.borderColor;
-  fi;
+  fill @#contentBorder withcolor @#info.foreColor;
+  draw @#contentBorder withcolor @#info.borderColor;
 
+  fill @#tagBorder withcolor @#info.foreColor;
+  draw @#tagBorder withcolor @#info.borderColor;
 
   drawObject(@#nameStack);
   drawObject(@#subItems);
-
 enddef;
 
 vardef Package_border@#=
-  @#border
+  @#totalBorder
 enddef;
