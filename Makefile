@@ -2,6 +2,7 @@
 # Licensed under the Apache License, Version 2.0.
 
 .PHONY: docker-release release release-tgz clean
+.DEFAULT_GOAL := docker-release
 
 _UID=$(shell id -u)
 TAG_NAME := $(or $(TAG_NAME),$(shell git describe --tags | rev | cut -f3- -d- | rev ))
