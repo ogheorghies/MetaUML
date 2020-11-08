@@ -101,9 +101,9 @@ drawObject(A);
 This code creates a visual object, referenced by its name {\code A}, of the MetaUML-defined type {\code Class}. 
 Object {\code A} has the following content properties: a name
 ({\code MyClass}), a list of attributes ({\code attr1}, {\code attr2})
-and a list of methods ({\code method1}, {\code method2}). To set the object's location, we assign a value to the 
-so-called ``north-west'' point of the encompassing rectangle, {\code A.nw} --- a point which in actual fact references 
-the upper-left corner.
+and a list of methods ({\code method1}, {\code method2}). To anchor the visual object on the plane, we constrain 
+its ``north-west'' or upper-left property, {\code A.nw}, to a given point, {\code (0,0)}. Finally, after the
+object is defined and positioned, {\code drawObject} is called to handle the actual rendering.
 
 Every MetaUML visual object has the layout properties shown in figure \ref{fig:properties}. 
 These properties may be used to set the location of any given object, either by assigning to them absolute values,
@@ -132,10 +132,10 @@ or association relations are meaningful links between classes, while in a state 
 states can be used. Here is the general pattern used by MetaUML for drawing links:
 
 \begin{verbatim}
-link(<how-to-draw-information>)(<path-to-draw>);
+link(<style>)(<path-to-draw>);
 \end{verbatim}
 
-The ``how-to-draw-information'' is an object which defines the style of the line (e.g. solid, dashed) and the appearance
+The ``style'' is an object which aggregates the visual properties the line (e.g. solid, dashed) and the appearance
 of the heads (e.g. nothing, arrow, diamond). One such object, appropriately called {\code inheritance}, defines a solid
 line style and a white triangle head. The other parameter, the ``path-to-draw'', is simply a MetaPost path.
 
@@ -1252,12 +1252,8 @@ B.ne = C.nw + (20,0);
 Base.s = B.n + (0,-20);
 \end{verbatim}
 
-Unfortunately, writing code such as this makes it hard for fellow programmers to visualize
-its intent upon reading it. And ``fellow programmers`` include the author, five minutes later.
-
-Perhaps the next version of the code will drive home the point. The outcome is
-the same as before, but the layout is stated in a more human-friendly way. You might even
-infer by yourself that the numeric argument represents the distance between the objects.
+Using relative rather than absolute positioning is sometimes easier to understand and maintain. For this, helper macros such as {\code leftToRight} and {\code topToBottom}
+come in handy: their first argument, here {\code 20}, defines the desired spacing.
 
 \begin{multicols}{2}
 \begin{verbatim}
@@ -1268,9 +1264,7 @@ topToBottom(20)(Base, B);
 \hspace{1cm}\includegraphics{fig/positioning.2}
 \end{multicols}
 
-Below there are examples which show how these macros can be used. Suppose that we have the 
-following definitions for objects {\code X}, {\code Y}, and {\code Z}; also, let's assume 
-that {\code spacing} is a numeric variable set to {\code 5}.
+To detail the use of these helper macros, let us consider three objects {\code X}, {\code Y}, and {\code Z}, with a {\code spacing} of {\code 5}.
 
 \begin{verbatim}
 Picture.X("a");
@@ -1306,8 +1300,7 @@ topToBottom.midx(spacing)(X, Y, Z);
 topToBottom(spacing)(X, Y, Z);
 \end{verbatim}
 
-If you want to specify that some objects have a given property equal, while the distance between them is given elsewhere, you can use the macro {\code same}.
-This macro accepts a variable number of parameters, but at least two. The following table gives the interpretation of the macro for a simple example.
+The macro {\code same} can be used to shorten equations involving equality of the same object property.
 
 \begin{tabular}{||l|l||}
 \hline
@@ -1423,8 +1416,9 @@ drawObjects(a, b);
 We have seen previously the line {\code iPict.ignoreNegativeBase := 1}.
 Who is {\code iPict} and what is it doing in our program? MetaUML
 aims at separating the ``business logic'' (what to draw) from the
-``interface'' (how to draw). In order to achieve this, it records the ``how to draw''
-information within the so-called {\code Info} structures. The object {\code iPict}
+``interface'' (how to draw, or style). In order to achieve this, it aggregates the ``how to draw'' or style
+information into the so-called {\code Info} structures.
+The object {\code iPict}
 is an instance of {\code PictureInfo} structure, which has the following properties
 (or attributes):
 \begin{verbatim}
@@ -1438,12 +1432,11 @@ actual item to be drawn. The marvelous effect of {\code ignoreNegativeBase}
 has just been shown (off), while the last two attributes control whether the border
 should be drawn (when {\code boxed=1}) and if drawn, in which color.
 
-There's one more thing: the font to typeset the text in. This is specified
-in a {\code FontInfo} structure which has two attributes: the font name
+The font to be used is specified in a {\code FontInfo} structure which has two attributes: the font name
 and the font scale. This information is kept within the {\code PictureInfo} structure
 as a contained attribute {\code iFont}. Both {\code FontInfo} and {\code PictureInfo}
-have ``copy constructors'' which can be used to make copies. We have already
-the effect of these copy constructors at work, when we used:
+have ``copy constructors'' which can be used to make copies. We have already seen
+these these copy constructors at work when we used:
 
 \begin{verbatim}
 Picture.a("yummy");
@@ -1479,7 +1472,7 @@ iSmall.borderColor := green;
 
 Below is an usage example of these definitions. Note the name of the macro: {\code EPicture}.
 The prefix comes form ``explicit''  and it's used to acknowledge that the
-``how to draw'' information is given explicitly --- as a parameter,
+``how to draw'' or style information is given explicitly --- as a parameter,
 rather than defaulted to what's recorded in {\code iPict}, as with the {\code Picture} macro.
 Having predefined configurations yields short, convenient code.
 
@@ -1733,21 +1726,21 @@ drawObject(pict);
 \end{verbatim}
 
 To allow for this type of code, the equations that define the layout of the {\code Picture} object (here, what the margins are)
-must be defined somewhere after the constructor. This is done by a macro called {\code Picture\_layout}.
-This macro defines all the equations which link the ``what to draw'' information to the ``how to draw''
-information (which in our case is taken from the {\code info} member, a copy of {\code iPict}).
-Nevertheless, notice that {\code Picture\_layouts} is not explicitly invoked. To the user's
-great relief, this is taken care of automatically within the {\code Picture\_draw} macro.
+must be defined somewhere after the constructor is called. Specifically, this is done by a macro called {\code Picture\_layout}.
+This macro defines all the equations which latch the ``what to draw'' information onto the ``how to draw'' or style
+information. In our case, the latter is taken from the member {\code info}, which is a copy of the global style information object {\code iPict}.
+Nevertheless, notice that {\code Picture\_layout} is not invoked explicitly. To the user's
+great relief, this is taken care of automatically by the {\code Picture\_draw} macro, which is in turn called by {\code drawObject}.
 
 There are times however, when explicitly invoking a macro like {\code Picture\_layout}
 becomes a necessity. This is because, by contract, it is only after the {\code layout}
 macro is invoked that the final dimensions (width, height) of an object are
 definitely and permanently known. Imagine that we have a component whose job is to
-surround in a red-filled rectangle some other objects. This component
+surround some other objects in a red-filled rectangle. This component
 needs to know what the dimensions of the contained objects are, in order to be able to set
 its own dimensions. At drawing time, the contained objects must not have been drawn already,
-because the red rectangle of the container would overwrite them.
-Therefore, the whole pseudo-code would be:
+because the red rectangle of the container would otherwise overwrite them.
+Therefore, the working strategy would be:
 \begin{verbatim}
 Create objects o1, o2, ... ok;
 Create container c(o1, o2, ..., ok);
@@ -1760,13 +1753,12 @@ draw red rectangle defined by c;
 draw components o1, o2, ...ok within c
 \end{verbatim}
 
-A natural conclusion is that an object must not be laid out more than once, because otherwise
-inconsistent or superfluous equations would arise. To enforce this, by contract,
+A natural conclusion is that an object must not be laid out more than once, lest
+inconsistent or superfluous equations arise. To enforce this, by contract,
 any object must keep record of whether its layout method has already been invoked,
-and if the answer is affirmative, subsequent invocations of the layout macro would
-do nothing. It is very important to mention that after the {\code layout} macro is
-invoked over an object, modifying the {\code info} member of that object has
-no subsequent effect, since the layout equations are declared and interpreted only once.
+and if the answer is affirmative, subsequent invocations of the layout macro should
+do nothing. Therefore, modifying the style {\code info} property of an object after its 
+{\code layout} macro has been invoked does nothing.
 
 \subsection{Notes on the Implementation of Links}
 
@@ -1912,7 +1904,7 @@ enddef;
 \section{Customization in MetaUML: Examples}
 \label{section:customization}
 
-We have seen that in MetaUML the ``how to draw'' information is memorized into the so-called
+We have seen that in MetaUML the ``how to draw'' or style information is stored into the so-called
 ``{\code Info}'' structures. For example, the default way in which a {\code Picture} object is
 to be drawn is recorded into an instance of {\code PictureInfo}, named {\code iPict}. In this section we
 present a case study involving the customization of {\code Class} objects. The customization of
@@ -1992,7 +1984,7 @@ on our system (as used with the MetaPost {\code infont} operator).
 This usage scenario is perhaps more interesting. Suppose that we have two
 types of classes which we want to draw differently. Making the setting adjustments
 for each individual class object would soon become a nuisance. MetaUML's solution consists in the
-ability of using predefined ``how to draw'' {\code Info} objects. Let us create such objects:
+ability of using predefined ``how to draw'' or style {\code Info} objects. Let us create such objects:
 
 \begin{verbatim}
 ClassInfoCopy.iHome(iClass);
@@ -2006,7 +1998,7 @@ iRemote.borderColor := green;
 Object {\code iHome} is a copy of {\code iClass} (as it might have been set at
 the time of the macro call). Object {\code iRemote} is created just as {\code iClass}
 is originally created. We can now use these {\code Info} objects to easily set the
-``how to draw'' information for classes. The result is depicted below,
+``how to draw'' or style information for UML classes. The result is depicted below,
 please note the ``{\code E}'' prefix in {\code EClass}:
 
 \begin{multicols}{2}

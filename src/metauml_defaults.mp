@@ -27,5 +27,3 @@ if not known metauml_defaultFontBoldOblique:
     string metauml_defaultFontBoldOblique;
     metauml_defaultFontBoldOblique  := "ptmbo8r";
 fi;
-
-

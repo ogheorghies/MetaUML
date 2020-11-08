@@ -5,9 +5,9 @@
 .DEFAULT_GOAL := docker-release
 
 _UID=$(shell id -u)
-TAG_NAME := $(or $(TAG_NAME),$(shell git describe --tags | rev | cut -f3- -d- | rev ))
-TAG_NAME_NO_V := $(TAG_NAME:v%=%)
-REVISION_ID := $(or $(REVISION_ID),$(shell git describe --tags | rev | cut -f-2 -d- | rev))
+TAG_NAME := $(or $(TAG_NAME),$(shell git describe --tags))
+
+METAUML_RELEASE_VERSION := $(TAG_NAME:v%=%)
 METAUML_RELEASE_DATE := $(shell date "+%B %d, %Y")
 
 release:
@@ -17,22 +17,23 @@ release:
 	mkdir dist/metauml/doc
 	mkdir dist/metauml/examples
 	mkdir dist/metauml/inputs
-	sed -e 's/METAUML_RELEASE_VERSION/$(TAG_NAME_NO_V)/' -e 's/METAUML_RELEASE_DATE/$(METAUML_RELEASE_DATE)/' ctan/README >dist/metauml/README
-	cp manual/metauml-manual.pdf dist/metauml/doc/metauml-manual-$(TAG_NAME)-$(REVISION_ID).pdf
+	sed -e 's/METAUML_RELEASE_VERSION/$(METAUML_RELEASE_VERSION)/' -e 's/METAUML_RELEASE_DATE/$(METAUML_RELEASE_DATE)/' ctan/README >dist/metauml/README
+	cp manual/metauml-manual.pdf dist/metauml/doc/metauml-manual-$(TAG_NAME).pdf
 	cp src/*.mp dist/metauml/inputs
 	cp -r manual dist/metauml/examples/
 	find dist/metauml/examples/ -type f -not -name "*.mp" -not -name "*.tex" -not -name "*.bib" -exec rm {} +
 
-release-tgz:
+release-archive: release
 	[ -d dist/archive ] || mkdir -p dist/archive
-	tar -C dist/ -cvf dist/archive/metauml-$(TAG_NAME)-$(REVISION_ID).tgz metauml
+	tar -C dist/ -cvf dist/archive/metauml-$(TAG_NAME).tgz metauml
 
 clean:
-	echo "Not implemented"
+	make -C manual clean
 
 docker-release:
-	docker run -it --rm -eHOME -eUSER -u=$(_UID) \
+	(set -x; docker run -it --rm -eHOME -eUSER -u=$(_UID) \
+		-eTAG_NAME=$(TAG_NAME) \
 		-v${HOME}:${HOME} \
 		-v${PWD}/src:/usr/local/texlive/2017/texmf-dist/metapost/metauml \
 		blang/latex:ctanfull \
-		bash -c "cd ${PWD}; TAG_NAME=$(TAG_NAME) REVISION_ID=$(REVISION_ID) make release"
+		bash -c "cd ${PWD}; MPINPUTS=${PWD}/src: make release-archive" )
