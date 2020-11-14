@@ -1,5 +1,7 @@
 MetaUML is a [MetaPost](https://www.tug.org/metapost.html) library for creating UML diagrams, using a textual notation.
 
+You can [experiment with MetaUML online](https://metauml.denksoft.com/).
+
 ```
 # Filename: example.mp
 input metauml;
