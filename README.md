@@ -4,7 +4,7 @@ MetaUML is a [MetaPost](https://www.tug.org/metapost.html) library for creating 
 # Filename: example.mp
 input metauml;
 beginfig(1);
-    Class.A("Point")("+x: int", "+y:int")();
+    Class.A("Point")("+x: int", "+y: int")();
     drawObject(A);
 endfig;
 end
