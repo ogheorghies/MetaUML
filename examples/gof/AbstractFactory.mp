@@ -35,7 +35,7 @@ beginfig(1);
     Class.productBa("ProductB1")()();
     Class.productBb("ProductB2")()();
 
-    abstractA.info.foreColor := productAa.info.foreColor := productAb.info.foreColor := yellow;
+    abstractA.info.foreColor := productAa.info.foreColor := productAb.info.foreColor := (1, 1, .8);
     abstractB.info.foreColor := productBa.info.foreColor := productBb.info.foreColor := (.0, .9, .9);
 
     client.w = factory.e + (200,0);
@@ -60,6 +60,7 @@ beginfig(1);
     link(associationUni)(pathStepY(concreteA.s + (5,0), productBa.s, -70));
 
     link(associationUni)(pathStepY(concreteB.s - (5,0), productAb.s, -30));
-    link(associationUni)(pathStepY(concreteB.s + (5,0), productBb.s, -40));endfig;
+    link(associationUni)(pathStepY(concreteB.s + (5,0), productBb.s, -40));
+endfig;
 
 end
